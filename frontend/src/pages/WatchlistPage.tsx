@@ -54,7 +54,16 @@ export const WatchlistPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {watchlist.map((movie) => (
             <div key={movie.id} className="glass-panel p-4 rounded-2xl border border-slate-800 flex gap-4 items-center">
-              <img src={movie.poster_path} alt={movie.title} className="w-20 h-28 object-cover rounded-xl bg-slate-900" />
+              <img
+                src={movie.poster_path}
+                alt={movie.title}
+                loading="lazy"
+                decoding="async"
+                className="w-20 h-28 object-cover rounded-xl bg-slate-900"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';
+                }}
+              />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <h3 className="font-bold text-white text-sm truncate">{movie.title}</h3>

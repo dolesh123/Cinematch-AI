@@ -1,0 +1,196 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller",
+      "Mystery"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7.5,
+    "max_rating": 10,
+    "discovery_slider": 0.4,
+    "preferred_era": [
+      "2010-2020",
+      "2020+"
+    ],
+    "favorite_movies": [
+      157336,
+      27205,
+      286217,
+      78
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T06:53:49.421Z",
+    "_id": "1786690429421.4856"
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "preferred_genres": [
+      "Romance",
+      "Drama"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [
+      "1980-2000",
+      "2000-2010",
+      "2010-2020"
+    ],
+    "favorite_movies": [
+      597,
+      11036,
+      4348,
+      122906
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T06:53:49.421Z",
+    "_id": "1786690429421.2493"
+  },
+  {
+    "id": 3,
+    "user_id": 3,
+    "preferred_genres": [
+      "Animation",
+      "Family",
+      "Adventure"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.3,
+    "preferred_era": [
+      "2000-2010",
+      "2010-2020",
+      "2020+"
+    ],
+    "favorite_movies": [
+      12,
+      10681,
+      14160,
+      38757
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T06:53:49.421Z",
+    "_id": "1786690429421.297"
+  },
+  {
+    "id": 4,
+    "user_id": 4,
+    "preferred_genres": [
+      "Action",
+      "Sci-Fi",
+      "Crime",
+      "Drama",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 6.5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [
+      27205,
+      155,
+      157336,
+      680
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T06:53:49.421Z",
+    "_id": "1786690429421.9148"
+  },
+  {
+    "id": 5,
+    "user_id": 5,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [
+      "2010-2020"
+    ],
+    "favorite_movies": [
+      27205
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T06:54:04.687Z",
+    "_id": "1786690444683.1018"
+  },
+  {
+    "id": 6,
+    "user_id": 6,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "Telugu"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.9,
+    "preferred_era": [],
+    "favorite_movies": [
+      19995,
+      597,
+      244786
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-14T09:10:23.102Z",
+    "_id": "1786698550089.7498"
+  },
+  {
+    "user_id": 901,
+    "preferred_genres": [
+      "Horror",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "_id": "1786700180519.882"
+  },
+  {
+    "user_id": 902,
+    "preferred_genres": [
+      "Romance",
+      "Drama"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "_id": "1786700180567.4463"
+  },
+  {
+    "user_id": 888,
+    "preferred_genres": [
+      "Horror",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "_id": "1786700787971.9338"
+  }
+]

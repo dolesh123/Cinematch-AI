@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Alex Vance (Sci-Fi Fan)",
+    "email": "scifi_user@cinematch.ai",
+    "password_hash": "$2a$10$n8wFUWqzbPh6dH1xkRVz9.1.H.TyKrkQeCKJg/7dq0LeQCISCjJGG",
+    "is_admin": false,
+    "created_at": "2026-08-14T06:53:49.419Z",
+    "_id": "1786690429419.0933"
+  },
+  {
+    "id": 2,
+    "name": "Sophia Rose (Romance Fan)",
+    "email": "romance_user@cinematch.ai",
+    "password_hash": "$2a$10$n8wFUWqzbPh6dH1xkRVz9.1.H.TyKrkQeCKJg/7dq0LeQCISCjJGG",
+    "is_admin": false,
+    "created_at": "2026-08-14T06:53:49.419Z",
+    "_id": "1786690429419.0994"
+  },
+  {
+    "id": 3,
+    "name": "Leo Das (Animation Fan)",
+    "email": "animation_user@cinematch.ai",
+    "password_hash": "$2a$10$n8wFUWqzbPh6dH1xkRVz9.1.H.TyKrkQeCKJg/7dq0LeQCISCjJGG",
+    "is_admin": false,
+    "created_at": "2026-08-14T06:53:49.419Z",
+    "_id": "1786690429419.433"
+  },
+  {
+    "id": 4,
+    "name": "Hackathon Evaluator",
+    "email": "admin@cinematch.ai",
+    "password_hash": "$2a$10$80QcVyNoTyvHw55WyupJ7OeqcZHKkRp1e9DCmGUEi3HORcCHt4FTi",
+    "is_admin": true,
+    "created_at": "2026-08-14T06:53:49.419Z",
+    "_id": "1786690429419.3093"
+  },
+  {
+    "id": 5,
+    "name": "MERN Test User",
+    "email": "testuser_1786690444620@cinematch.ai",
+    "password_hash": "$2a$10$4EGZdHqa9TOkY.do6Uz4x.gTBYyvTYQt7m.1rZzGuo/sLz7qX6Ur6",
+    "is_admin": false,
+    "created_at": "2026-08-14T06:54:04.682Z",
+    "_id": "1786690444682.3008"
+  },
+  {
+    "id": 6,
+    "name": "john",
+    "email": "john@gmail.com",
+    "password_hash": "$2a$10$7TZNk9TwPhuiu3JK6KT8J.5dqA7PZa0XMrbb6sMBZDGR5NzMaso4q",
+    "is_admin": false,
+    "created_at": "2026-08-14T09:09:10.088Z",
+    "_id": "1786698550088.7253"
+  },
+  {
+    "id": 901,
+    "name": "User A (Horror Fan)",
+    "email": "usera_horror@test.com",
+    "_id": "1786700060212.405"
+  },
+  {
+    "id": 902,
+    "name": "User B (Romance Fan)",
+    "email": "userb_romance@test.com",
+    "_id": "1786700060213.906"
+  }
+]

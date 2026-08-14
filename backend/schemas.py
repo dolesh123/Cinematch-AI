@@ -86,7 +86,7 @@ class MovieRecommendation(MovieResponse):
     genre_score: float
     language_score: float
     explanation: str
-    explanation_details: Dict[str, float]  # breakdown dictionary
+    explanation_details: Dict[str, Any] = {}
 
 
 # --- Feedback / Interaction Schemas ---

@@ -43,6 +43,8 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         <img
           src={movie.poster_path}
           alt={movie.title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';

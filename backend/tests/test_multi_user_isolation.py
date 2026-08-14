@@ -1,24 +1,18 @@
 import pytest
+from datetime import datetime, timezone
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import mongomock
 
-from database import Base, get_db
+from database import get_db
 from main import app
-from models import User, UserPreference, Movie, Rating, UserInteraction
 from security import hash_password
 
-# Setup isolated test database engine
-SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///./test_isolation.db"
-test_engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+# Setup isolated mongomock test database
+mock_client = mongomock.MongoClient()
+test_db = mock_client["test_cinematch_isolation"]
 
 def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
+    yield test_db
 
 app.dependency_overrides[get_db] = override_get_db
 
@@ -26,33 +20,36 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def setup_test_db():
-    Base.metadata.drop_all(bind=test_engine)
-    Base.metadata.create_all(bind=test_engine)
-    
-    db = TestingSessionLocal()
-    # Seed 4 distinct movies
-    m1 = Movie(id=101, title="Interstellar", year=2014, genres='["Sci-Fi", "Drama"]', overview="Space exploration", rating=8.7, director="Nolan")
-    m2 = Movie(id=102, title="Blade Runner 2049", year=2017, genres='["Sci-Fi", "Mystery"]', overview="Cyberpunk future", rating=8.0, director="Villeneuve")
-    m3 = Movie(id=103, title="Titanic", year=1997, genres='["Romance", "Drama"]', overview="Shipwreck romance", rating=7.9, director="Cameron")
-    m4 = Movie(id=104, title="The Notebook", year=2004, genres='["Romance", "Drama"]', overview="Love story", rating=7.8, director="Cassavetes")
-    db.add_all([m1, m2, m3, m4])
-    db.commit()
+    test_db.movies.delete_many({})
+    test_db.users.delete_many({})
+    test_db.user_preferences.delete_many({})
+    test_db.user_interactions.delete_many({})
+    test_db.ratings.delete_many({})
+    test_db.watchlists.delete_many({})
+    test_db.recommendation_history.delete_many({})
 
-    # User A: Sci-Fi
-    user_a = User(id=1, name="User A SciFi", email="usera@test.com", password_hash=hash_password("pass123"))
-    # User B: Romance
-    user_b = User(id=2, name="User B Romance", email="userb@test.com", password_hash=hash_password("pass123"))
-    db.add_all([user_a, user_b])
-    db.commit()
+    # Seed 4 distinct test movies
+    test_db.movies.insert_many([
+        {"id": 101, "title": "Interstellar", "year": 2014, "genres": ["Sci-Fi", "Drama"], "overview": "Space exploration", "rating": 8.7, "director": "Christopher Nolan", "language": "English", "cast_members": ["Matthew McConaughey"], "keywords": ["space"]},
+        {"id": 102, "title": "Blade Runner 2049", "year": 2017, "genres": ["Sci-Fi", "Mystery"], "overview": "Cyberpunk future", "rating": 8.0, "director": "Denis Villeneuve", "language": "English", "cast_members": ["Ryan Gosling"], "keywords": ["future"]},
+        {"id": 103, "title": "Titanic", "year": 1997, "genres": ["Romance", "Drama"], "overview": "Shipwreck romance", "rating": 7.9, "director": "James Cameron", "language": "English", "cast_members": ["Leonardo DiCaprio"], "keywords": ["shipwreck"]},
+        {"id": 104, "title": "The Notebook", "year": 2004, "genres": ["Romance", "Drama"], "overview": "Love story", "rating": 7.8, "director": "Nick Cassavetes", "language": "English", "cast_members": ["Ryan Gosling"], "keywords": ["love"]}
+    ])
 
-    pref_a = UserPreference(user_id=1, preferred_genres='["Sci-Fi"]', preferred_languages='["English"]', onboarding_completed=True, favorite_movies='[101, 102]')
-    pref_b = UserPreference(user_id=2, preferred_genres='["Romance"]', preferred_languages='["English"]', onboarding_completed=True, favorite_movies='[103, 104]')
-    db.add_all([pref_a, pref_b])
+    # User 1: Sci-Fi
+    test_db.users.insert_one({"id": 1, "name": "User A SciFi", "email": "usera@test.com", "password_hash": hash_password("pass123"), "is_admin": False, "created_at": datetime.now(timezone.utc)})
+    # User 2: Romance
+    test_db.users.insert_one({"id": 2, "name": "User B Romance", "email": "userb@test.com", "password_hash": hash_password("pass123"), "is_admin": False, "created_at": datetime.now(timezone.utc)})
 
-    db.add(UserInteraction(user_id=1, movie_id=101, interaction_type="LIKE", weight=1.0))
-    db.add(UserInteraction(user_id=2, movie_id=103, interaction_type="LIKE", weight=1.0))
-    db.commit()
-    db.close()
+    test_db.user_preferences.insert_many([
+        {"user_id": 1, "preferred_genres": ["Sci-Fi"], "preferred_languages": ["English"], "min_rating": 5.0, "max_rating": 10.0, "discovery_slider": 0.4, "preferred_era": [], "favorite_movies": [101, 102], "onboarding_completed": True},
+        {"user_id": 2, "preferred_genres": ["Romance"], "preferred_languages": ["English"], "min_rating": 5.0, "max_rating": 10.0, "discovery_slider": 0.5, "preferred_era": [], "favorite_movies": [103, 104], "onboarding_completed": True}
+    ])
+
+    test_db.user_interactions.insert_many([
+        {"user_id": 1, "movie_id": 101, "interaction_type": "LIKE", "weight": 1.0, "timestamp": datetime.now(timezone.utc)},
+        {"user_id": 2, "movie_id": 103, "interaction_type": "LIKE", "weight": 1.0, "timestamp": datetime.now(timezone.utc)}
+    ])
 
 
 def test_unauthenticated_request_fails():

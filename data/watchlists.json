@@ -1,0 +1,30 @@
+[
+  {
+    "user_id": 1,
+    "movie_id": 603,
+    "is_watched": false,
+    "added_at": "2026-08-14T06:53:49.423Z",
+    "_id": "1786690429424.512"
+  },
+  {
+    "user_id": 2,
+    "movie_id": 4348,
+    "is_watched": false,
+    "added_at": "2026-08-14T06:53:49.424Z",
+    "_id": "1786690429424.9644"
+  },
+  {
+    "user_id": 3,
+    "movie_id": 38757,
+    "is_watched": false,
+    "added_at": "2026-08-14T06:53:49.424Z",
+    "_id": "1786690429424.766"
+  },
+  {
+    "user_id": 5,
+    "movie_id": 27205,
+    "is_watched": false,
+    "added_at": "2026-08-14T06:54:45.460Z",
+    "_id": "1786690485460.8591"
+  }
+]

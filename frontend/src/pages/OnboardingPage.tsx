@@ -136,7 +136,16 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete }) =>
                         : 'border-slate-800 hover:border-slate-600 opacity-80 hover:opacity-100'
                     }`}
                   >
-                    <img src={movie.poster_path} alt={movie.title} className="w-full h-full object-cover" />
+                    <img
+                      src={movie.poster_path}
+                      alt={movie.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';
+                      }}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-2 flex flex-col justify-between">
                       <div className="flex justify-end">
                         {isSelected && (

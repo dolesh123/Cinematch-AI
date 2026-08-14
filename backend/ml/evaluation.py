@@ -1,17 +1,16 @@
 import numpy as np
 import pandas as pd
-from sqlalchemy.orm import Session
-from models import Rating, User, Movie
-from ml.collaborative_recommender import CollaborativeRecommender
-from ml.content_recommender import ContentBasedRecommender
+from ml.unified_recommender import UnifiedRecommender
 
 class ModelEvaluator:
-    def __init__(self, db: Session):
+    def __init__(self, db):
         self.db = db
+        self.unified_rec = UnifiedRecommender()
+        self.unified_rec.fit_or_load(db)
 
     def evaluate(self, k: int = 5) -> dict:
-        ratings = self.db.query(Rating).all()
-        movies_count = self.db.query(Movie).count()
+        ratings = list(self.db.ratings.find({}))
+        movies_count = self.db.movies.count_documents({})
         if not ratings:
             return {
                 "precision_at_k": 0.85,
@@ -25,22 +24,22 @@ class ModelEvaluator:
                 "dataset_ratings_count": 0
             }
 
-        # Build rating dataframe
         df = pd.DataFrame([{
-            "user_id": r.user_id,
-            "movie_id": r.movie_id,
-            "rating": r.rating
+            "user_id": int(r.get("user_id", 0)),
+            "movie_id": int(r.get("movie_id", 0)),
+            "rating": float(r.get("rating", 7.0))
         } for r in ratings])
 
         user_ids = df["user_id"].unique()
-        precisions, recalls, ndcgs, map_scores, errors = [], [], [], [], []
+        precisions, recalls, ndcgs, errors = [], [], [], []
+
+        all_movie_ids = [int(m.get("id", m.get("_id", 0))) for m in self.db.movies.find({})]
 
         for uid in user_ids:
             user_ratings = df[df["user_id"] == uid]
             if len(user_ratings) < 2:
                 continue
 
-            # Hold out 20% ratings for testing
             test_subset = user_ratings.sample(frac=0.2, random_state=42)
             train_subset = user_ratings.drop(test_subset.index)
 
@@ -48,13 +47,14 @@ class ModelEvaluator:
             if not relevant_test_items:
                 continue
 
-            # Candidate movies (all excluding train items)
-            candidate_ids = [m.id for m in self.db.query(Movie).all() if m.id not in train_subset["movie_id"].values]
+            candidate_ids = [m_id for m_id in all_movie_ids if m_id not in train_subset["movie_id"].values]
+            if not candidate_ids:
+                continue
 
-            # Top K recommendations based on average rating & content similarity
-            top_k_recs = sorted(candidate_ids, key=lambda x: np.random.rand(), reverse=True)[:k]
+            # Rank candidate movies using trained unified model
+            collab_scores = self.unified_rec.get_collaborative_scores(uid, candidate_ids)
+            top_k_recs = sorted(candidate_ids, key=lambda x: collab_scores.get(x, 0.5), reverse=True)[:k]
 
-            # Hits
             hits = len(set(top_k_recs).intersection(relevant_test_items))
 
             prec = hits / float(k)
@@ -63,7 +63,6 @@ class ModelEvaluator:
             precisions.append(prec)
             recalls.append(rec)
 
-            # Compute NDCG@K
             dcg = 0.0
             for idx, item_id in enumerate(top_k_recs):
                 if item_id in relevant_test_items:
@@ -72,9 +71,9 @@ class ModelEvaluator:
             ndcg = dcg / idcg if idcg > 0 else 0.0
             ndcgs.append(ndcg)
 
-            # RMSE
             for _, row in test_subset.iterrows():
-                pred_rating = 8.2  # Model estimated mean
+                pred_score = self.unified_rec.predict_collaborative_score(uid, int(row["movie_id"]))
+                pred_rating = 5.0 + pred_score * 5.0
                 errors.append((row["rating"] - pred_rating) ** 2)
 
         avg_prec = float(np.mean(precisions)) if precisions else 0.84
@@ -96,7 +95,7 @@ class ModelEvaluator:
         }
 
 if __name__ == "__main__":
-    from database import SessionLocal
-    db = SessionLocal()
+    from database import get_database
+    db = get_database()
     evaluator = ModelEvaluator(db)
     print("Evaluation Results:", evaluator.evaluate(k=5))

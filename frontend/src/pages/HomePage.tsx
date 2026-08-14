@@ -20,11 +20,12 @@ export const HomePage: React.FC = () => {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const recs = await recommendationAPI.getRecommendations();
-      setRecommendations(recs);
-
-      const wl = await interactionAPI.getWatchlist();
-      setWatchlist(wl);
+      const [recs, wl] = await Promise.all([
+        recommendationAPI.getRecommendations(),
+        interactionAPI.getWatchlist().catch(() => [])
+      ]);
+      setRecommendations(recs || []);
+      setWatchlist(wl || []);
     } catch (e) {
       console.error("Failed to load dashboard data", e);
     } finally {
@@ -41,7 +42,7 @@ export const HomePage: React.FC = () => {
     setActiveMoodPrompt(prompt);
     try {
       const moodRecs = await recommendationAPI.getMoodRecommendations(prompt);
-      setRecommendations(moodRecs);
+      setRecommendations(moodRecs || []);
     } catch (e) {
       console.error("Failed to fetch mood recommendations", e);
     } finally {
@@ -56,13 +57,16 @@ export const HomePage: React.FC = () => {
 
   const handleLike = async (movieId: number) => {
     await interactionAPI.submitFeedback(movieId, 'LIKE');
-    recommendationAPI.getRecommendations().then((res) => setRecommendations(res));
+    recommendationAPI.getRecommendations().then((res) => {
+      if (res) setRecommendations(res);
+    }).catch(() => {});
   };
 
   const handleWatchlistToggle = async (movieId: number) => {
     await interactionAPI.toggleWatchlist(movieId);
-    const wl = await interactionAPI.getWatchlist();
-    setWatchlist(wl);
+    interactionAPI.getWatchlist().then((wl) => {
+      if (wl) setWatchlist(wl);
+    }).catch(() => {});
   };
 
   const getTimeGreeting = () => {

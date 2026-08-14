@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { safeStorage } from './storage';
 import type {
   User, UserPreferences, Movie, MovieRecommendation,
   TasteProfile, AdminAnalytics, MLMetrics
@@ -14,7 +15,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('cinematch_token');
+  const token = safeStorage.getItem('cinematch_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -40,8 +41,8 @@ export const authAPI = {
     } catch (e) {
       // ignore
     }
-    localStorage.removeItem('cinematch_token');
-    localStorage.removeItem('cinematch_user');
+    safeStorage.removeItem('cinematch_token');
+    safeStorage.removeItem('cinematch_user');
   }
 };
 

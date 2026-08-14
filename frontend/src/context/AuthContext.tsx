@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import type { User } from '../types';
 import { authAPI } from '../services/api';
+import { safeStorage } from '../services/storage';
 
 interface AuthContextType {
   user: User | null;
@@ -16,44 +17,76 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('cinematch_token'));
-  const [loading, setLoading] = useState<boolean>(true);
+  const [token, setToken] = useState<string | null>(() => safeStorage.getItem('cinematch_token'));
 
-  const fetchUser = async () => {
+  const [user, setUser] = useState<User | null>(() => {
     try {
-      if (token) {
-        const u = await authAPI.getMe();
+      const raw = safeStorage.getItem('cinematch_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const isFetchingRef = useRef<boolean>(false);
+
+  const clearSession = useCallback(() => {
+    safeStorage.removeItem('cinematch_token');
+    safeStorage.removeItem('cinematch_user');
+    setToken(null);
+    setUser(null);
+    setLoading(false);
+  }, []);
+
+  const fetchUser = useCallback(async () => {
+    const currentToken = safeStorage.getItem('cinematch_token');
+    if (!currentToken) {
+      clearSession();
+      return;
+    }
+
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
+    try {
+      const u = await authAPI.getMe();
+      if (u && u.id) {
         setUser(u);
+        try {
+          safeStorage.setItem('cinematch_user', JSON.stringify(u));
+        } catch (e) {}
       } else {
-        setUser(null);
+        clearSession();
       }
     } catch (e) {
-      console.error("Failed to fetch current user session", e);
-      logout();
+      clearSession();
     } finally {
+      isFetchingRef.current = false;
       setLoading(false);
     }
-  };
+  }, [clearSession]);
 
   useEffect(() => {
     fetchUser();
-  }, [token]);
+  }, [fetchUser]);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
       const data = await authAPI.login(email, password);
-      localStorage.setItem('cinematch_token', data.access_token);
-      setToken(data.access_token);
-      setUser({
+      const userObj: User = {
         id: data.user_id,
         name: data.name,
         email: data.email,
         is_admin: data.is_admin,
         onboarding_completed: data.onboarding_completed,
         created_at: new Date().toISOString()
-      });
+      };
+      safeStorage.setItem('cinematch_token', data.access_token);
+      safeStorage.setItem('cinematch_user', JSON.stringify(userObj));
+      setToken(data.access_token);
+      setUser(userObj);
     } finally {
       setLoading(false);
     }
@@ -68,25 +101,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const data = await authAPI.register(name, email, password);
-      localStorage.setItem('cinematch_token', data.access_token);
-      setToken(data.access_token);
-      setUser({
+      const userObj: User = {
         id: data.user_id,
         name: data.name,
         email: data.email,
         is_admin: data.is_admin,
         onboarding_completed: data.onboarding_completed,
         created_at: new Date().toISOString()
-      });
+      };
+      safeStorage.setItem('cinematch_token', data.access_token);
+      safeStorage.setItem('cinematch_user', JSON.stringify(userObj));
+      setToken(data.access_token);
+      setUser(userObj);
     } finally {
       setLoading(false);
     }
   };
 
   const logout = () => {
-    authAPI.logout();
-    setToken(null);
-    setUser(null);
+    try {
+      authAPI.logout();
+    } catch (e) {}
+    clearSession();
   };
 
   return (

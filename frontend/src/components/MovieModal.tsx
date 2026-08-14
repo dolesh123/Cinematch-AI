@@ -47,7 +47,12 @@ export const MovieModal: React.FC<MovieModalProps> = ({
           <img
             src={movie.backdrop_path || movie.poster_path}
             alt={movie.title}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover opacity-50"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&auto=format&fit=crop&q=80';
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 

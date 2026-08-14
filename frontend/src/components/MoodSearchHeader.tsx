@@ -32,22 +32,19 @@ export const MoodSearchHeader: React.FC<MoodSearchHeaderProps> = ({
 
   return (
     <div className="relative overflow-hidden rounded-2xl glass-panel p-6 sm:p-8 border border-indigo-500/20 shadow-2xl mb-8">
-      
+
       {/* Background Decorative Glow */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-3xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-3">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-spin" />
-          LLM Natural Language & Mood Engine
-        </div>
+
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
           How are you feeling right now?
         </h2>
         <p className="text-sm text-slate-400 mt-1 mb-6">
-          Enter any mood or request (e.g. <span className="text-slate-200 italic">"I am sad"</span>, <span className="text-slate-200 italic">"I want a feel-good romcom"</span>) and Gemini AI will re-rank your recommendation pipeline in real-time.
+          Enter any mood, title, director, or actor (e.g. <span className="text-slate-200 italic">"Christopher Nolan"</span>, <span className="text-slate-200 italic">"Leonardo DiCaprio"</span>, <span className="text-slate-200 italic">"mind-bending sci-fi"</span>) and our local Machine Learning engine will re-rank recommendations in real-time.
         </p>
 
         {/* Input Form */}

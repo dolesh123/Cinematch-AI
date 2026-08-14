@@ -1,0 +1,32 @@
+[
+  {
+    "user_id": 901,
+    "query": "spooky haunted house",
+    "timestamp": "2026-08-14T09:36:20.519Z",
+    "_id": "1786700180519.637"
+  },
+  {
+    "user_id": 4,
+    "query": "I am sad and need an uplifting feel-good movie",
+    "timestamp": "2026-08-14T09:37:59.310Z",
+    "_id": "1786700279310.0334"
+  },
+  {
+    "user_id": 4,
+    "query": "I would like to watch a romantic comedy",
+    "timestamp": "2026-08-14T09:38:04.862Z",
+    "_id": "1786700284862.1636"
+  },
+  {
+    "user_id": 4,
+    "query": "I would like to watch a romantic comedy",
+    "timestamp": "2026-08-14T09:38:09.935Z",
+    "_id": "1786700289935.5103"
+  },
+  {
+    "user_id": 4,
+    "query": "I would like to watch a romantic comedy",
+    "timestamp": "2026-08-14T09:44:22.961Z",
+    "_id": "1786700662961.9856"
+  }
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "user_id": 1,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T06:53:49.422Z",
+    "_id": "1786690429422.2363"
+  },
+  {
+    "user_id": 1,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T06:53:49.422Z",
+    "_id": "1786690429422.954"
+  },
+  {
+    "user_id": 1,
+    "movie_id": 603,
+    "interaction_type": "CLICK",
+    "weight": 0.2,
+    "timestamp": "2026-08-14T06:53:49.422Z",
+    "_id": "1786690429422.361"
+  },
+  {
+    "user_id": 2,
+    "movie_id": 597,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T06:53:49.422Z",
+    "_id": "1786690429422.472"
+  },
+  {
+    "user_id": 2,
+    "movie_id": 11036,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T06:53:49.422Z",
+    "_id": "1786690429422.4316"
+  },
+  {
+    "user_id": 5,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T06:54:04.698Z",
+    "_id": "1786690444698.6575"
+  },
+  {
+    "user_id": 5,
+    "movie_id": 27205,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-14T06:54:45.461Z",
+    "_id": "1786690485461.0762"
+  },
+  {
+    "user_id": 4,
+    "movie_id": 680,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T08:44:29.784Z",
+    "_id": "1786697069784.9995"
+  },
+  {
+    "user_id": 4,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T08:45:09.978Z",
+    "_id": "1786697109978.454"
+  },
+  {
+    "user_id": 4,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T08:45:14.212Z",
+    "_id": "1786697114212.5242"
+  },
+  {
+    "user_id": 4,
+    "movie_id": 49026,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:06:54.093Z",
+    "_id": "1786698414093.1765"
+  },
+  {
+    "user_id": 4,
+    "movie_id": 49026,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:07:00.427Z",
+    "_id": "1786698420427.2686"
+  },
+  {
+    "user_id": 6,
+    "movie_id": 19995,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:10:23.103Z",
+    "_id": "1786698623103.274"
+  },
+  {
+    "user_id": 6,
+    "movie_id": 597,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:10:23.104Z",
+    "_id": "1786698623104.8699"
+  },
+  {
+    "user_id": 6,
+    "movie_id": 244786,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:10:23.104Z",
+    "_id": "1786698623104.371"
+  },
+  {
+    "user_id": 6,
+    "movie_id": 184098,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-14T09:11:22.084Z",
+    "_id": "1786698682084.3315"
+  },
+  {
+    "user_id": 901,
+    "movie_id": 2001,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:36:21.521Z",
+    "_id": "1786700180521.5798"
+  },
+  {
+    "user_id": 901,
+    "movie_id": 2002,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:36:22.539Z",
+    "_id": "1786700180539.4758"
+  },
+  {
+    "user_id": 901,
+    "movie_id": 2003,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:36:23.556Z",
+    "_id": "1786700180556.7656"
+  },
+  {
+    "user_id": 901,
+    "movie_id": 2004,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:36:24.566Z",
+    "_id": "1786700180566.1428"
+  },
+  {
+    "user_id": 902,
+    "movie_id": 597,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:36:20.566Z",
+    "_id": "1786700180566.1838"
+  },
+  {
+    "user_id": 888,
+    "movie_id": 138843,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:46:27.969Z",
+    "_id": "1786700787969.0383"
+  },
+  {
+    "user_id": 888,
+    "movie_id": 948,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:46:27.970Z",
+    "_id": "1786700787970.7017"
+  },
+  {
+    "user_id": 888,
+    "movie_id": 694,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-14T09:46:27.970Z",
+    "_id": "1786700787970.9766"
+  }
+]

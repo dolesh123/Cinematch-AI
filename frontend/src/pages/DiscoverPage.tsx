@@ -22,15 +22,16 @@ export const DiscoverPage: React.FC = () => {
   const fetchDiscoverMovies = async () => {
     setLoading(true);
     try {
-      const recs = await recommendationAPI.getRecommendations(
-        selectedGenre || undefined,
-        selectedLanguage || undefined,
-        selectedEra || undefined
-      );
-      setRecommendations(recs);
-
-      const wl = await interactionAPI.getWatchlist();
-      setWatchlist(wl);
+      const [recs, wl] = await Promise.all([
+        recommendationAPI.getRecommendations(
+          selectedGenre || undefined,
+          selectedLanguage || undefined,
+          selectedEra || undefined
+        ),
+        interactionAPI.getWatchlist().catch(() => [])
+      ]);
+      setRecommendations(recs || []);
+      setWatchlist(wl || []);
     } catch (e) {
       console.error("Failed to load discover page", e);
     } finally {
@@ -48,8 +49,9 @@ export const DiscoverPage: React.FC = () => {
 
   const handleWatchlistToggle = async (movieId: number) => {
     await interactionAPI.toggleWatchlist(movieId);
-    const wl = await interactionAPI.getWatchlist();
-    setWatchlist(wl);
+    interactionAPI.getWatchlist().then((wl) => {
+      if (wl) setWatchlist(wl);
+    }).catch(() => {});
   };
 
   const filteredRecs = recommendations.filter((r) =>
