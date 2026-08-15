@@ -2,26 +2,52 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { getDB, getCachedMovies, getCachedMovieById, getMovieImages } = require('../db');
+const { getMoviePoster } = require('../services/posterResolver');
 const { SECRET_KEY } = require('../middleware/auth');
 
 function formatMovie(m) {
   const mId = Number(m.id || m._id);
   const mTitle = m.title || '';
+  const mYear = Number(m.year || 2000);
   const mGenres = Array.isArray(m.genres) ? m.genres : [];
-  let [defaultPoster, defaultBackdrop] = getMovieImages(mId, mTitle, mGenres);
+  const mDirector = m.director || 'Unknown';
+
+  let posterUrl = '';
+
+  // 1. Check if movie already has an authentic TMDB path
+  if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.includes('image.tmdb.org') && !m.poster_path.includes('unsplash')) {
+    posterUrl = m.poster_path;
+  } else if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('/')) {
+    posterUrl = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
+  }
+
+  // 2. If no valid TMDB path, use the authentic poster resolver
+  if (!posterUrl || posterUrl.includes('unsplash')) {
+    posterUrl = getMoviePoster(mTitle, mYear, mGenres, mDirector);
+  }
+
+  // Backdrop resolution
+  let backdropUrl = '';
+  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.includes('image.tmdb.org') && !m.backdrop_path.includes('unsplash')) {
+    backdropUrl = m.backdrop_path;
+  } else if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('/')) {
+    backdropUrl = `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`;
+  } else {
+    backdropUrl = posterUrl;
+  }
 
   return {
     id: mId,
     title: mTitle,
-    year: Number(m.year || 2000),
+    year: mYear,
     genres: mGenres,
     language: m.language || 'English',
     rating: Number(m.rating || 7.0),
     vote_count: Number(m.vote_count || 100),
     overview: m.overview || '',
-    poster_path: m.poster_path && m.poster_path.startsWith('http') ? m.poster_path : defaultPoster,
-    backdrop_path: m.backdrop_path && m.backdrop_path.startsWith('http') ? m.backdrop_path : defaultBackdrop,
-    director: m.director || 'Unknown',
+    poster_path: posterUrl,
+    backdrop_path: backdropUrl,
+    director: mDirector,
     cast_members: Array.isArray(m.cast_members) ? m.cast_members : [],
     keywords: Array.isArray(m.keywords) ? m.keywords : [],
     popularity: Number(m.popularity || 10.0),

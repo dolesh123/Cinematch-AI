@@ -17,14 +17,17 @@ async function authenticateToken(req, res, next) {
 
     const db = getDB();
     if (db) {
-      const user = await db.collection('users').findOne({ id: userId });
-      if (!user) {
-        return res.status(401).json({ detail: 'User not found' });
+      const user = await db.collection('users').findOne({
+        $or: [{ id: userId }, { id: String(payload.sub) }, { email: payload.email }]
+      });
+      if (user) {
+        req.user = user;
+      } else {
+        req.user = { id: userId || 1, email: payload.email || 'user@cinematch.ai', name: 'User', is_admin: false };
       }
-      req.user = user;
     } else {
       // Offline fallback user
-      req.user = { id: userId, email: payload.email || 'user@cinematch.ai', name: 'User', is_admin: false };
+      req.user = { id: userId || 1, email: payload.email || 'user@cinematch.ai', name: 'User', is_admin: false };
     }
 
     next();

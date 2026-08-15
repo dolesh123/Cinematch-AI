@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bookmark, Trash2, Star, Film } from 'lucide-react';
 import { interactionAPI } from '../services/api';
 import type { Movie } from '../types';
+import { handleImageError } from '../utils/imageFallback';
 
 export const WatchlistPage: React.FC = () => {
   const [watchlist, setWatchlist] = useState<Movie[]>([]);
@@ -60,9 +61,7 @@ export const WatchlistPage: React.FC = () => {
                 loading="lazy"
                 decoding="async"
                 className="w-20 h-28 object-cover rounded-xl bg-slate-900"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';
-                }}
+                onError={(e) => handleImageError(e, movie.title, movie.year, movie.genres, movie.director)}
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">

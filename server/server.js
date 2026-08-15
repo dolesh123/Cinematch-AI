@@ -8,7 +8,6 @@ const cors = require('cors');
 require('dotenv').config();
 
 const { connectDB } = require('./db');
-const { startMLDaemon } = require('./services/mlService');
 
 const authRoutes = require('./routes/auth');
 const preferencesRoutes = require('./routes/preferences');
@@ -33,12 +32,11 @@ app.use('/api', interactionsRoutes); // provides /api/feedback and /api/watchlis
 app.use('/api', analyticsRoutes);    // provides /api/my-taste, /api/model/metrics, /api/admin/analytics
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', stack: 'MERN', engine: 'Express.js + Python ML Engine' });
+  res.json({ status: 'ok', stack: 'MERN', engine: 'Express.js + Node.js Hybrid Recommender Engine' });
 });
 
 async function startServer() {
   await connectDB();
-  startMLDaemon();
   app.listen(PORT, '127.0.0.1', () => {
     console.log(`[Express Backend] CineMatch MERN server running at http://127.0.0.1:${PORT}`);
   });

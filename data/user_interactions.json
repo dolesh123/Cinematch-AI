@@ -190,5 +190,117 @@
     "weight": 1,
     "timestamp": "2026-08-14T09:46:27.970Z",
     "_id": "1786700787970.9766"
+  },
+  {
+    "user_id": 904,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:18:28.560Z",
+    "_id": "1786796308560.5793"
+  },
+  {
+    "user_id": 904,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:18:28.560Z",
+    "_id": "1786796308560.652"
+  },
+  {
+    "user_id": 905,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:27:46.309Z",
+    "_id": "1786796866309.6755"
+  },
+  {
+    "user_id": 905,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:27:46.309Z",
+    "_id": "1786796866309.4097"
+  },
+  {
+    "user_id": 905,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:27:46.365Z",
+    "_id": "1786796866365.3982"
+  },
+  {
+    "user_id": 905,
+    "movie_id": 157336,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-15T12:27:46.405Z",
+    "_id": "1786796866405.3152"
+  },
+  {
+    "user_id": 906,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:29:08.339Z",
+    "_id": "1786796948339.7654"
+  },
+  {
+    "user_id": 906,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:29:08.339Z",
+    "_id": "1786796948339.4314"
+  },
+  {
+    "user_id": 906,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:29:08.430Z",
+    "_id": "1786796948430.9224"
+  },
+  {
+    "user_id": 906,
+    "movie_id": 157336,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-15T12:29:08.439Z",
+    "_id": "1786796948439.7627"
+  },
+  {
+    "user_id": 907,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:35:54.713Z",
+    "_id": "1786797354713.0098"
+  },
+  {
+    "user_id": 907,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:35:54.714Z",
+    "_id": "1786797354714.086"
+  },
+  {
+    "user_id": 907,
+    "movie_id": 157336,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-15T12:35:54.787Z",
+    "_id": "1786797354787.3193"
+  },
+  {
+    "user_id": 907,
+    "movie_id": 157336,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-15T12:35:54.800Z",
+    "_id": "1786797354800.9058"
   }
 ]

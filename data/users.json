@@ -64,5 +64,55 @@
     "name": "User B (Romance Fan)",
     "email": "userb_romance@test.com",
     "_id": "1786700060213.906"
+  },
+  {
+    "id": 903,
+    "name": "Integration Tester",
+    "email": "test_1786796192951@cinematch.ai",
+    "password_hash": "$2a$10$X.i4n/r/YFOpV9ceM2za6OxFvNtVlXxezfY.g5XPGoAVteVsMjHla",
+    "is_admin": false,
+    "created_at": "2026-08-15T12:16:33.659Z",
+    "last_login": "2026-08-15T12:16:33.659Z",
+    "_id": "1786796193659.1199"
+  },
+  {
+    "id": 904,
+    "name": "Hackathon Tester",
+    "email": "test_1786796308381@cinematch.ai",
+    "password_hash": "$2a$10$g0TCn7pmRk74jpotll.7eukdoaqBP9uhOrRfFHMllmCil/0OCX9Bm",
+    "is_admin": false,
+    "created_at": "2026-08-15T12:18:28.478Z",
+    "last_login": "2026-08-15T12:18:28.554Z",
+    "_id": "1786796308478.3975"
+  },
+  {
+    "id": 905,
+    "name": "Hackathon Tester",
+    "email": "test_1786796866126@cinematch.ai",
+    "password_hash": "$2a$10$pBQ/Yun/ambbY8cStmGN9O/Z2vmo0HJZXkGvvb6aADHAF9zCV6klu",
+    "is_admin": false,
+    "created_at": "2026-08-15T12:27:46.228Z",
+    "last_login": "2026-08-15T12:27:46.303Z",
+    "_id": "1786796866228.3599"
+  },
+  {
+    "id": 906,
+    "name": "Hackathon Tester",
+    "email": "test_1786796948157@cinematch.ai",
+    "password_hash": "$2a$10$DstkGh4Q/QOT0vI/zbFR8eywcCWCUKSCTbWl.O7V/.ElaFFdxbski",
+    "is_admin": false,
+    "created_at": "2026-08-15T12:29:08.258Z",
+    "last_login": "2026-08-15T12:29:08.333Z",
+    "_id": "1786796948258.6711"
+  },
+  {
+    "id": 907,
+    "name": "Hackathon Tester",
+    "email": "test_1786797354544@cinematch.ai",
+    "password_hash": "$2a$10$HiveJrjCV1xYiem3l0d3N.GjRcDu1RYjmXezLQEkGwD5HjDPjzoWe",
+    "is_admin": false,
+    "created_at": "2026-08-15T12:35:54.637Z",
+    "last_login": "2026-08-15T12:35:54.707Z",
+    "_id": "1786797354637.9778"
   }
 ]

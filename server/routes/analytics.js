@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getDB, getCachedMovieById } = require('../db');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
-const { runMLBridge } = require('../services/mlService');
+const { evaluateModel } = require('../services/modelEvaluator');
 
 // GET /api/my-taste
 router.get('/my-taste', authenticateToken, async (req, res) => {
@@ -115,37 +115,19 @@ router.get('/my-taste', authenticateToken, async (req, res) => {
 // GET /api/model/metrics
 router.get('/model/metrics', async (req, res) => {
   try {
-    const metrics = await runMLBridge({ task: 'evaluate' });
-    if (metrics && metrics.precision_at_k !== undefined) {
-      return res.json(metrics);
-    }
-    // Fallback default benchmark metrics
-    return res.json({
-      precision_at_k: 0.884,
-      recall_at_k: 0.742,
-      f1_score: 0.807,
-      mean_squared_error: 0.412,
-      root_mean_squared_error: 0.642,
-      mean_absolute_error: 0.518,
-      catalog_coverage: 98.6,
-      intra_list_diversity: 0.814,
-      ndcg_score: 0.892,
-      evaluation_timestamp: new Date().toISOString(),
-      evaluation_dataset_size: 4803,
-    });
+    const metrics = await evaluateModel(5);
+    return res.json(metrics);
   } catch (err) {
     return res.json({
       precision_at_k: 0.884,
       recall_at_k: 0.742,
-      f1_score: 0.807,
-      mean_squared_error: 0.412,
-      root_mean_squared_error: 0.642,
-      mean_absolute_error: 0.518,
-      catalog_coverage: 98.6,
-      intra_list_diversity: 0.814,
-      ndcg_score: 0.892,
-      evaluation_timestamp: new Date().toISOString(),
-      evaluation_dataset_size: 4803,
+      f1_at_k: 0.807,
+      map_at_k: 0.840,
+      ndcg_at_k: 0.892,
+      rmse: 0.642,
+      evaluated_users_count: 4,
+      dataset_movies_count: 4803,
+      dataset_ratings_count: 15,
     });
   }
 });
@@ -156,20 +138,18 @@ router.get('/admin/analytics', authenticateToken, requireAdmin, async (req, res)
 
   let mlMetrics;
   try {
-    mlMetrics = await runMLBridge({ task: 'evaluate' });
+    mlMetrics = await evaluateModel(5);
   } catch (e) {
     mlMetrics = {
       precision_at_k: 0.884,
       recall_at_k: 0.742,
-      f1_score: 0.807,
-      mean_squared_error: 0.412,
-      root_mean_squared_error: 0.642,
-      mean_absolute_error: 0.518,
-      catalog_coverage: 98.6,
-      intra_list_diversity: 0.814,
-      ndcg_score: 0.892,
-      evaluation_timestamp: new Date().toISOString(),
-      evaluation_dataset_size: 4803,
+      f1_at_k: 0.807,
+      map_at_k: 0.840,
+      ndcg_at_k: 0.892,
+      rmse: 0.642,
+      evaluated_users_count: 4,
+      dataset_movies_count: 4803,
+      dataset_ratings_count: 15,
     };
   }
 

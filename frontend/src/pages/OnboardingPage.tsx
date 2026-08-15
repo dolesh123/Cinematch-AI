@@ -3,6 +3,7 @@ import { Sparkles, Check, ArrowRight, Search, Star, Sliders } from 'lucide-react
 import { movieAPI, preferenceAPI } from '../services/api';
 import type { Movie } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { handleImageError } from '../utils/imageFallback';
 
 interface OnboardingPageProps {
   onComplete: () => void;
@@ -142,9 +143,7 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete }) =>
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';
-                      }}
+                      onError={(e) => handleImageError(e, movie.title, movie.year, movie.genres)}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-2 flex flex-col justify-between">
                       <div className="flex justify-end">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, Heart, Bookmark, Sparkles, Check, Clapperboard, Users } from 'lucide-react';
 import type { MovieRecommendation } from '../types';
+import { DEFAULT_BACKDROP } from '../utils/imageFallback';
 
 interface MovieModalProps {
   movie: MovieRecommendation | null;
@@ -51,7 +52,11 @@ export const MovieModal: React.FC<MovieModalProps> = ({
             decoding="async"
             className="w-full h-full object-cover opacity-50"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&auto=format&fit=crop&q=80';
+              const target = e.target as HTMLImageElement;
+              if (target.src !== DEFAULT_BACKDROP) {
+                target.onerror = null;
+                target.src = DEFAULT_BACKDROP;
+              }
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>

@@ -28,5 +28,53 @@
     "query": "I would like to watch a romantic comedy",
     "timestamp": "2026-08-14T09:44:22.961Z",
     "_id": "1786700662961.9856"
+  },
+  {
+    "user_id": 903,
+    "query": "interstellar",
+    "timestamp": "2026-08-15T12:16:33.709Z",
+    "_id": "1786796193709.0183"
+  },
+  {
+    "user_id": 904,
+    "query": "Inception",
+    "timestamp": "2026-08-15T12:18:28.564Z",
+    "_id": "1786796308564.6428"
+  },
+  {
+    "user_id": 905,
+    "query": "Inception",
+    "timestamp": "2026-08-15T12:27:46.316Z",
+    "_id": "1786796866316.5637"
+  },
+  {
+    "user_id": 905,
+    "query": "mind-bending sci-fi space exploration no horror",
+    "timestamp": "2026-08-15T12:27:46.356Z",
+    "_id": "1786796866356.4907"
+  },
+  {
+    "user_id": 906,
+    "query": "Inception",
+    "timestamp": "2026-08-15T12:29:08.348Z",
+    "_id": "1786796948348.449"
+  },
+  {
+    "user_id": 906,
+    "query": "mind-bending sci-fi space exploration no horror",
+    "timestamp": "2026-08-15T12:29:08.392Z",
+    "_id": "1786796948392.6953"
+  },
+  {
+    "user_id": 907,
+    "query": "Inception",
+    "timestamp": "2026-08-15T12:35:54.717Z",
+    "_id": "1786797354717.375"
+  },
+  {
+    "user_id": 907,
+    "query": "mind-bending sci-fi space exploration no horror",
+    "timestamp": "2026-08-15T12:35:54.751Z",
+    "_id": "1786797354751.494"
   }
 ]

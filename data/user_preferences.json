@@ -192,5 +192,312 @@
       "English"
     ],
     "_id": "1786700787971.9338"
+  },
+  {
+    "id": 903,
+    "user_id": 903,
+    "preferred_genres": [],
+    "recent_liked_genres": [],
+    "recent_searches": [
+      "interstellar"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-15T12:16:33.711Z",
+    "updated_at": "2026-08-15T12:16:33.711Z",
+    "_id": "1786796193660.95"
+  },
+  {
+    "$or": [
+      {
+        "user_id": 903
+      },
+      {
+        "user_id": "903"
+      }
+    ],
+    "user_id": 903,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-15T12:16:33.669Z",
+    "_id": "1786796193669.819"
+  },
+  {
+    "id": 904,
+    "user_id": 904,
+    "preferred_genres": [],
+    "recent_liked_genres": [],
+    "recent_searches": [
+      "Inception"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-15T12:18:28.565Z",
+    "updated_at": "2026-08-15T12:18:28.565Z",
+    "_id": "1786796308479.76"
+  },
+  {
+    "$or": [
+      {
+        "user_id": 904
+      },
+      {
+        "user_id": "904"
+      }
+    ],
+    "user_id": 904,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.4,
+    "preferred_era": [],
+    "favorite_movies": [
+      157336,
+      27205
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-15T12:18:28.559Z",
+    "_id": "1786796308559.3376"
+  },
+  {
+    "id": 905,
+    "user_id": 905,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_searches": [
+      "mind-bending sci-fi space exploration no horror",
+      "Inception"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-15T12:27:46.366Z",
+    "updated_at": "2026-08-15T12:27:46.366Z",
+    "_id": "1786796866229.556",
+    "last_liked_movie_ids": [
+      157336,
+      157336,
+      27205
+    ]
+  },
+  {
+    "$or": [
+      {
+        "user_id": 905
+      },
+      {
+        "user_id": "905"
+      }
+    ],
+    "user_id": 905,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.4,
+    "preferred_era": [],
+    "favorite_movies": [
+      157336,
+      27205
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-15T12:27:46.308Z",
+    "_id": "1786796866308.011"
+  },
+  {
+    "id": 906,
+    "user_id": 906,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_searches": [
+      "mind-bending sci-fi space exploration no horror",
+      "Inception"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-15T12:29:08.431Z",
+    "updated_at": "2026-08-15T12:29:08.431Z",
+    "_id": "1786796948259.2856",
+    "last_liked_movie_ids": [
+      157336,
+      157336,
+      27205
+    ]
+  },
+  {
+    "$or": [
+      {
+        "user_id": 906
+      },
+      {
+        "user_id": "906"
+      }
+    ],
+    "user_id": 906,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.4,
+    "preferred_era": [],
+    "favorite_movies": [
+      157336,
+      27205
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-15T12:29:08.338Z",
+    "_id": "1786796948338.6782"
+  },
+  {
+    "id": 907,
+    "user_id": 907,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure",
+      "Drama"
+    ],
+    "recent_searches": [
+      "mind-bending sci-fi space exploration no horror",
+      "Inception"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-15T12:35:54.788Z",
+    "updated_at": "2026-08-15T12:35:54.788Z",
+    "_id": "1786797354638.509",
+    "last_liked_movie_ids": [
+      157336,
+      27205,
+      157336
+    ]
+  },
+  {
+    "$or": [
+      {
+        "user_id": 907
+      },
+      {
+        "user_id": "907"
+      }
+    ],
+    "user_id": 907,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 7,
+    "max_rating": 10,
+    "discovery_slider": 0.4,
+    "preferred_era": [],
+    "favorite_movies": [
+      157336,
+      27205
+    ],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-15T12:35:54.713Z",
+    "_id": "1786797354713.8787"
   }
 ]

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Star, Heart, Bookmark, Info, Sparkles, Check } from 'lucide-react';
 import type { MovieRecommendation } from '../types';
+import { handleImageError } from '../utils/imageFallback';
 
 interface MovieCardProps {
   movie: MovieRecommendation;
@@ -46,9 +47,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80';
-          }}
+          onError={(e) => handleImageError(e, movie.title, movie.year, movie.genres, movie.director)}
         />
 
         <div className="absolute top-3 left-3 z-10">
