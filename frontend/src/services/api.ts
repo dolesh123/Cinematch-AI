@@ -5,7 +5,14 @@ import type {
   TasteProfile, AdminAnalytics, MLMetrics
 } from '../types';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000/api';
+let rawBase = ((import.meta as any).env?.VITE_API_URL || 'http://localhost:8000/api').trim();
+if (rawBase.endsWith('/')) {
+  rawBase = rawBase.slice(0, -1);
+}
+if (!rawBase.endsWith('/api')) {
+  rawBase = `${rawBase}/api`;
+}
+const API_BASE_URL = rawBase;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
