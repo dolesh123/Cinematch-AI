@@ -37,8 +37,8 @@ app.get('/api/health', (req, res) => {
 
 async function startServer() {
   await connectDB();
-  app.listen(PORT, '127.0.0.1', () => {
-    console.log(`[Express Backend] CineMatch MERN server running at http://127.0.0.1:${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[Express Backend] CineMatch MERN server running at http://0.0.0.0:${PORT}`);
   });
 }
 
