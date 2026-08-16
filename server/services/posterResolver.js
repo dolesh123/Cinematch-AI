@@ -1,4 +1,3 @@
-const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
@@ -14,14 +13,9 @@ try {
   posterCache = {};
 }
 
-function saveCache() {
-  try {
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(posterCache, null, 2), 'utf-8');
-  } catch (e) {}
-}
-
 // Curated verified authentic posters for top franchises & iconic titles
 const CURATED_POSTERS = {
+  // Spider-Man franchise
   "Spider-Man": "https://upload.wikimedia.org/wikipedia/en/6/6c/Spider-Man_%282002_film%29_poster.jpg",
   "Spider-Man 2": "https://upload.wikimedia.org/wikipedia/en/4/4e/Spider-Man_2_USA_poster.jpg",
   "Spider-Man 3": "https://upload.wikimedia.org/wikipedia/en/7/7a/Spider-Man_3%2C_International_Poster.jpg",
@@ -34,7 +28,22 @@ const CURATED_POSTERS = {
   "The Amazing Spider-Man": "https://upload.wikimedia.org/wikipedia/en/0/02/The_Amazing_Spider-Man_theatrical_poster.jpeg",
   "The Amazing Spider-Man 2": "https://upload.wikimedia.org/wikipedia/en/0/02/The_Amazing_Spider-Man_2_poster.jpg",
   
-  // Marvel & DC
+  // Batman & DC
+  "Batman": "https://upload.wikimedia.org/wikipedia/en/5/5a/Batman_%281989_film%29_poster.jpg",
+  "Batman Returns": "https://upload.wikimedia.org/wikipedia/en/c/c1/Batman_returns_poster2.jpg",
+  "Batman Forever": "https://upload.wikimedia.org/wikipedia/en/8/82/Batman_Forever_poster.jpg",
+  "Batman & Robin": "https://upload.wikimedia.org/wikipedia/en/3/37/Batman_%26_Robin_poster.jpg",
+  "Batman Begins": "https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg",
+  "The Dark Knight": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+  "The Dark Knight Rises": "https://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg",
+  "Man of Steel": "https://upload.wikimedia.org/wikipedia/en/8/85/ManofSteelFinalPoster.jpg",
+  "Batman v Superman: Dawn of Justice": "https://upload.wikimedia.org/wikipedia/en/2/20/Batman_v_Superman_poster.jpg",
+  "Justice League": "https://upload.wikimedia.org/wikipedia/en/3/31/Justice_League_film_poster.jpg",
+  "Wonder Woman": "https://upload.wikimedia.org/wikipedia/en/e/ed/Wonder_Woman_%282017_film%29.png",
+  "Aquaman": "https://upload.wikimedia.org/wikipedia/en/3/3a/Aquaman_poster.jpg",
+  "Joker": "https://upload.wikimedia.org/wikipedia/en/e/e1/Joker_%282019_film%29_poster.jpg",
+
+  // Marvel
   "Iron Man": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg",
   "Iron Man 2": "https://upload.wikimedia.org/wikipedia/en/e/ed/Iron_Man_2_poster.jpg",
   "Iron Man 3": "https://upload.wikimedia.org/wikipedia/en/1/19/Iron_Man_3_poster.jpg",
@@ -49,12 +58,11 @@ const CURATED_POSTERS = {
   "Thor: The Dark World": "https://upload.wikimedia.org/wikipedia/en/7/7e/Thor_-_The_Dark_World_poster.jpg",
   "Thor: Ragnarok": "https://upload.wikimedia.org/wikipedia/en/7/7d/Thor_Ragnarok_poster.jpg",
   "Guardians of the Galaxy": "https://upload.wikimedia.org/wikipedia/en/b/b5/Guardians_of_the_Galaxy_poster.jpg",
+  "Guardians of the Galaxy Vol. 2": "https://upload.wikimedia.org/wikipedia/en/a/ab/Guardians_of_the_Galaxy_Vol_2_poster.jpg",
   "Deadpool": "https://upload.wikimedia.org/wikipedia/en/c/ca/Deadpool.png",
-  "The Dark Knight": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-  "The Dark Knight Rises": "https://upload.wikimedia.org/wikipedia/en/8/83/Dark_knight_rises_poster.jpg",
-  "Batman Begins": "https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg",
-  "Man of Steel": "https://upload.wikimedia.org/wikipedia/en/8/85/ManofSteelFinalPoster.jpg",
-  "Batman v Superman: Dawn of Justice": "https://upload.wikimedia.org/wikipedia/en/2/20/Batman_v_Superman_poster.jpg",
+  "Deadpool 2": "https://upload.wikimedia.org/wikipedia/en/c/cf/Deadpool_2_poster.jpg",
+  "Doctor Strange": "https://upload.wikimedia.org/wikipedia/en/a/a1/Doctor_Strange_poster.jpg",
+  "Black Panther": "https://upload.wikimedia.org/wikipedia/en/d/d6/Black_Panther_film_poster.jpg",
 
   // Sci-Fi & Classics
   "Avatar": "https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg",
@@ -107,14 +115,13 @@ const CURATED_POSTERS = {
   "Tenet": "https://upload.wikimedia.org/wikipedia/en/1/14/Tenet_movie_poster.jpg"
 };
 
-// Generates a sleek, authentic movie-branded SVG poster for any title that lacks a CDN image
+// Generates an instant, zero-latency authentic movie-branded SVG poster
 function generateCinematicPoster(title, year, genres, director) {
   const safeTitle = (title || 'Movie').replace(/[<>&"]/g, '');
   const safeYear = year ? String(year) : '';
   const safeGenre = Array.isArray(genres) && genres.length > 0 ? genres[0] : 'Feature Film';
   const safeDirector = director && director !== 'Unknown' ? `Directed by ${director}` : '';
 
-  // Palette based on genre
   let gradient1 = '#0f172a';
   let gradient2 = '#1e1b4b';
   let accent = '#818cf8';
@@ -150,97 +157,46 @@ function generateCinematicPoster(title, year, genres, director) {
     </defs>
     <rect width="500" height="750" fill="url(#bg)" />
     
-    <!-- Cinema Frame Design -->
     <rect x="20" y="20" width="460" height="710" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" rx="12" />
     <circle cx="250" cy="220" r="110" fill="rgba(255,255,255,0.03)" />
     <circle cx="250" cy="220" r="70" fill="none" stroke="${accent}" stroke-width="2" opacity="0.4" stroke-dasharray="6,6" />
     
-    <!-- Film Clapboard Icon -->
     <path d="M 220 190 L 280 190 L 280 250 L 220 250 Z" fill="none" stroke="${accent}" stroke-width="3" rx="4" opacity="0.8" />
     <polygon points="238,205 238,235 265,220" fill="${accent}" opacity="0.9" />
 
-    <!-- Bottom Dark Overlay -->
     <rect width="500" height="750" fill="url(#overlay)" />
 
-    <!-- Metadata Badge -->
     <rect x="40" y="520" width="auto" height="26" rx="6" fill="rgba(255,255,255,0.1)" />
     <text x="45" y="538" fill="${accent}" font-family="Arial, sans-serif" font-size="12" font-weight="bold" letter-spacing="1.5">${safeGenre.toUpperCase()} • ${safeYear}</text>
 
-    <!-- Movie Title (supports wrapping) -->
     <text x="40" y="590" fill="#ffffff" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="900" letter-spacing="-0.5">${safeTitle.length > 22 ? safeTitle.substring(0, 20) + '...' : safeTitle}</text>
     
-    <!-- Director -->
     <text x="40" y="625" fill="#94a3b8" font-family="Arial, sans-serif" font-size="14" font-weight="500">${safeDirector}</text>
     
-    <!-- Quality Seal -->
     <text x="40" y="690" fill="rgba(255,255,255,0.4)" font-family="Arial, sans-serif" font-size="10" letter-spacing="2">CINEMATCH AI • OFFICIAL SELECTION</text>
   </svg>`;
 
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
-// Resolves authentic movie poster URL using:
-// 1. Curated Dictionary -> 2. Permanent Cache -> 3. Wikipedia Open API -> 4. Dynamic Cinema SVG Poster
+// Resolves authentic movie poster URL instantly (0ms latency)
 function getMoviePoster(title, year, genres, director) {
   if (!title) return generateCinematicPoster('Movie', year, genres, director);
 
   const cleanTitle = title.trim();
 
-  // 1. Check curated high-definition posters
+  // 1. Check curated high-definition posters (0ms)
   if (CURATED_POSTERS[cleanTitle]) {
     return CURATED_POSTERS[cleanTitle];
   }
 
-  // 2. Check local disk/memory cache
+  // 2. Check local disk/memory cache (0ms)
   if (posterCache[cleanTitle]) {
     return posterCache[cleanTitle];
   }
 
-  // Asynchronously query Wikipedia and cache it in the background
-  fetchWikipediaPosterAsync(cleanTitle, year);
-
-  // 3. Fallback to authentic Movie-Branded Cinema Poster
+  // 3. Fallback to instant Movie-Branded Cinema Poster (0ms)
   return generateCinematicPoster(cleanTitle, year, genres, director);
-}
-
-// Background asynchronous poster fetcher from Wikipedia REST API
-function fetchWikipediaPosterAsync(title, year) {
-  if (posterCache[title] !== undefined) return;
-  posterCache[title] = null; // Mark as in-flight
-
-  const candidates = [
-    `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title + (year ? ` (${year} film)` : ''))}`,
-    `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title + ' (film)')}`,
-    `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
-  ];
-
-  function tryFetch(idx) {
-    if (idx >= candidates.length) return;
-
-    const req = https.get(candidates[idx], {
-      headers: { 'User-Agent': 'CineMatchAI/1.0 (hackathon movie recommendation project)' },
-      timeout: 3000
-    }, (res) => {
-      let data = '';
-      res.on('data', d => data += d);
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-          if (json && json.thumbnail && json.thumbnail.source && !json.thumbnail.source.includes('Araneus_diadematus')) {
-            posterCache[title] = json.thumbnail.source;
-            saveCache();
-            return;
-          }
-        } catch (e) {}
-        tryFetch(idx + 1);
-      });
-    });
-
-    req.on('error', () => tryFetch(idx + 1));
-    req.on('timeout', () => { req.destroy(); tryFetch(idx + 1); });
-  }
-
-  tryFetch(0);
 }
 
 module.exports = {

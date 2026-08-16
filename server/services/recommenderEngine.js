@@ -341,47 +341,8 @@ async function getDynamicRecommendations({
     const rawScore = score;
     const finalScore = Math.min(99.0, Math.max(50.0, Math.round((Math.min(100, score > 100 ? 90 + score / 50 : score)) * 10) / 10));
 
-    const mId = Number(movie.id);
-    const mTitle = movie.title || '';
-    const mYear = Number(movie.year || 2000);
-    const mDirector = movie.director || 'Unknown';
-
-    let posterUrl = '';
-    if (movie.poster_path && typeof movie.poster_path === 'string' && movie.poster_path.includes('image.tmdb.org') && !movie.poster_path.includes('unsplash')) {
-      posterUrl = movie.poster_path;
-    } else if (movie.poster_path && typeof movie.poster_path === 'string' && movie.poster_path.startsWith('/')) {
-      posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-    }
-
-    if (!posterUrl || posterUrl.includes('unsplash')) {
-      posterUrl = getMoviePoster(mTitle, mYear, movieGenres, mDirector);
-    }
-
-    let backdropUrl = '';
-    if (movie.backdrop_path && typeof movie.backdrop_path === 'string' && movie.backdrop_path.includes('image.tmdb.org') && !movie.backdrop_path.includes('unsplash')) {
-      backdropUrl = movie.backdrop_path;
-    } else if (movie.backdrop_path && typeof movie.backdrop_path === 'string' && movie.backdrop_path.startsWith('/')) {
-      backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
-    } else {
-      backdropUrl = posterUrl;
-    }
-
     scoredCandidates.push({
-      id: mId,
-      title: movie.title,
-      year: Number(movie.year || 2000),
-      genres: movieGenres,
-      language: movie.language || 'English',
-      rating: Number(movie.rating || 7.0),
-      vote_count: Number(movie.vote_count || 100),
-      overview: movie.overview || '',
-      poster_path: posterUrl,
-      backdrop_path: backdropUrl,
-      director: movie.director || 'Unknown',
-      cast_members: movieCast,
-      keywords: movieKeywords,
-      popularity: Number(movie.popularity || 10.0),
-      emotional_vibes: Array.isArray(movie.emotional_vibes) ? movie.emotional_vibes : [],
+      movie,
       match_score: finalScore,
       _rawScore: rawScore,
       content_score: details['Recent Likes Alignment'] / 100,
@@ -394,9 +355,64 @@ async function getDynamicRecommendations({
   }
 
   // Sort strictly descending by raw score
-  scoredCandidates.sort((a, b) => b._rawScore - a._rawScore || b.rating - a.rating);
+  scoredCandidates.sort((a, b) => b._rawScore - a._rawScore || (b.movie.rating || 7) - (a.movie.rating || 7));
 
-  return applyDiversityRerank(scoredCandidates, limit, hasActiveSearch);
+  const topItems = applyDiversityRerank(scoredCandidates, limit, hasActiveSearch);
+  return topItems.map(formatFinalMovie);
+}
+
+function formatFinalMovie(item) {
+  const m = item.movie;
+  const mId = Number(m.id || m._id);
+  const mTitle = m.title || '';
+  const mYear = Number(m.year || 2000);
+  const mGenres = Array.isArray(m.genres) ? m.genres : [];
+  const mDirector = m.director || 'Unknown';
+
+  let posterUrl = '';
+  if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.includes('image.tmdb.org') && !m.poster_path.includes('unsplash')) {
+    posterUrl = m.poster_path;
+  } else if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('/')) {
+    posterUrl = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
+  }
+
+  if (!posterUrl || posterUrl.includes('unsplash')) {
+    posterUrl = getMoviePoster(mTitle, mYear, mGenres, mDirector);
+  }
+
+  let backdropUrl = '';
+  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.includes('image.tmdb.org') && !m.backdrop_path.includes('unsplash')) {
+    backdropUrl = m.backdrop_path;
+  } else if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('/')) {
+    backdropUrl = `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`;
+  } else {
+    backdropUrl = posterUrl;
+  }
+
+  return {
+    id: mId,
+    title: mTitle,
+    year: mYear,
+    genres: mGenres,
+    language: m.language || 'English',
+    rating: Number(m.rating || 7.0),
+    vote_count: Number(m.vote_count || 100),
+    overview: m.overview || '',
+    poster_path: posterUrl,
+    backdrop_path: backdropUrl,
+    director: mDirector,
+    cast_members: Array.isArray(m.cast_members) ? m.cast_members : [],
+    keywords: Array.isArray(m.keywords) ? m.keywords : [],
+    popularity: Number(m.popularity || 10.0),
+    emotional_vibes: Array.isArray(m.emotional_vibes) ? m.emotional_vibes : [],
+    match_score: item.match_score,
+    content_score: item.content_score,
+    collaborative_score: item.collaborative_score,
+    genre_score: item.genre_score,
+    language_score: item.language_score,
+    explanation: item.explanation,
+    explanation_details: item.explanation_details,
+  };
 }
 
 function applyDiversityRerank(rankedItems, limit, hasActiveSearch) {
@@ -417,14 +433,15 @@ function applyDiversityRerank(rankedItems, limit, hasActiveSearch) {
     const lookahead = Math.min(remaining.length, limit * 3);
     for (let i = 0; i < lookahead; i++) {
       const cand = remaining[i];
+      const m = cand.movie;
       const rawS = cand._rawScore || cand.match_score || 50;
 
       let pen = 0;
-      for (const g of (cand.genres || []).slice(0, 2)) {
+      for (const g of (m.genres || []).slice(0, 2)) {
         pen += (genreCount[g] || 0) * 15;
       }
-      if (cand.director && cand.director !== 'Unknown') {
-        pen += (directorCount[cand.director] || 0) * 30;
+      if (m.director && m.director !== 'Unknown') {
+        pen += (directorCount[m.director] || 0) * 30;
       }
 
       const divScore = rawS - pen;
@@ -436,11 +453,12 @@ function applyDiversityRerank(rankedItems, limit, hasActiveSearch) {
 
     const chosen = remaining.splice(bestIdx, 1)[0];
     selected.push(chosen);
-    for (const g of (chosen.genres || []).slice(0, 2)) {
+    const chosenMovie = chosen.movie;
+    for (const g of (chosenMovie.genres || []).slice(0, 2)) {
       genreCount[g] = (genreCount[g] || 0) + 1;
     }
-    if (chosen.director && chosen.director !== 'Unknown') {
-      directorCount[chosen.director] = (directorCount[chosen.director] || 0) + 1;
+    if (chosenMovie.director && chosenMovie.director !== 'Unknown') {
+      directorCount[chosenMovie.director] = (directorCount[chosenMovie.director] || 0) + 1;
     }
   }
 
