@@ -31,6 +31,30 @@ app.use('/api/recommendations', recommendationsRoutes);
 app.use('/api', interactionsRoutes); // provides /api/feedback and /api/watchlist
 app.use('/api', analyticsRoutes);    // provides /api/my-taste, /api/model/metrics, /api/admin/analytics
 
+// Root and Health Endpoints
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    project: 'CineMatch AI - Intelligent Movie Recommendation System',
+    version: '1.0.0',
+    track: 'Cognizant Hackathon (S.NO 6 Movie Recommendation)',
+    stack: 'Express.js + Node.js + MongoDB MERN Architecture',
+    endpoints: {
+      health: '/api/health',
+      movies: '/api/movies',
+      auth_login: '/api/auth/login',
+      auth_register: '/api/auth/register',
+      recommendations: '/api/recommendations/unified',
+      model_metrics: '/api/model/metrics',
+      admin_analytics: '/api/admin/analytics'
+    }
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', stack: 'MERN', engine: 'Express.js + Node.js Hybrid Recommender Engine' });
 });
