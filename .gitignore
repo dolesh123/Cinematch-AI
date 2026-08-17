@@ -15,8 +15,6 @@ dist/
 build/
 .pytest_cache/
 
-# IDE & OS
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
+# Cache
+data/poster_cache.json
+*.cache

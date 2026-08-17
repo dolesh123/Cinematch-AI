@@ -38,11 +38,40 @@ const GENRE_SYNONYMS = {
   'sci-fi': 'Science Fiction',
   scifi: 'Science Fiction',
   'science fiction': 'Science Fiction',
+  'science-fiction': 'Science Fiction',
+  sciencefiction: 'Science Fiction',
   thriller: 'Thriller',
   suspense: 'Thriller',
   war: 'War',
   western: 'Western',
 };
+
+function normalizeGenre(g) {
+  if (!g) return '';
+  const key = String(g).trim().toLowerCase();
+  if (GENRE_SYNONYMS[key]) return GENRE_SYNONYMS[key];
+  const simplified = key.replace(/[^a-z0-9]/g, '');
+  for (const [k, canonical] of Object.entries(GENRE_SYNONYMS)) {
+    if (k.replace(/[^a-z0-9]/g, '') === simplified) {
+      return canonical;
+    }
+  }
+  return key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+function matchesGenre(movieGenre, targetGenre) {
+  if (!movieGenre || !targetGenre) return false;
+  const mNorm = normalizeGenre(movieGenre);
+  const tNorm = normalizeGenre(targetGenre);
+  if (mNorm && tNorm && mNorm.toLowerCase() === tNorm.toLowerCase()) return true;
+  const mStr = String(movieGenre).toLowerCase();
+  const tStr = String(targetGenre).toLowerCase();
+  if (mStr === tStr) return true;
+  const mClean = mStr.replace(/[^a-z0-9]/g, '');
+  const tClean = tStr.replace(/[^a-z0-9]/g, '');
+  if (mClean && tClean && mClean === tClean) return true;
+  return mStr.includes(tStr) || tStr.includes(mStr);
+}
 
 function parseNegation(queryStr) {
   if (!queryStr) return [];
@@ -187,7 +216,7 @@ async function getDynamicRecommendations({
     }
 
     // FILTER: Genre, Language, Era if explicitly selected in filter bar
-    if (filterGenre && !movieGenres.some((g) => g.toLowerCase() === filterGenre.toLowerCase())) {
+    if (filterGenre && !movieGenres.some((g) => matchesGenre(g, filterGenre))) {
       continue;
     }
     if (filterLanguage && movie.language && movie.language.toLowerCase() !== filterLanguage.toLowerCase()) {

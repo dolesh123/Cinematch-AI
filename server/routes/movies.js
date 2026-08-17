@@ -120,8 +120,17 @@ router.get('/search', async (req, res) => {
     let results = allMovies;
 
     if (genre) {
+      const target = genre.toLowerCase().replace(/[^a-z0-9]/g, '');
       results = results.filter((m) =>
-        (m.genres || []).some((g) => g.toLowerCase() === genre.toLowerCase())
+        (m.genres || []).some((g) => {
+          const gNorm = g.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (gNorm === target) return true;
+          if ((target.includes('scifi') || target.includes('sciencefiction')) &&
+              (gNorm.includes('scifi') || gNorm.includes('sciencefiction'))) {
+            return true;
+          }
+          return g.toLowerCase().includes(genre.toLowerCase()) || genre.toLowerCase().includes(g.toLowerCase());
+        })
       );
     }
 
