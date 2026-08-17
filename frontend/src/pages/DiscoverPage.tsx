@@ -8,7 +8,6 @@ import { MovieModal } from '../components/MovieModal';
 export const DiscoverPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedEra, setSelectedEra] = useState('');
   const [recommendations, setRecommendations] = useState<MovieRecommendation[]>([]);
   const [watchlist, setWatchlist] = useState<Movie[]>([]);
@@ -16,7 +15,6 @@ export const DiscoverPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const genres = ['Sci-Fi', 'Action', 'Thriller', 'Romance', 'Drama', 'Comedy', 'Animation', 'Adventure', 'Mystery', 'Horror', 'Crime', 'Family', 'Fantasy'];
-  const languages = ['English', 'Hindi', 'Telugu', 'Korean', 'Japanese'];
   const eras = ['Classic', '1980-2000', '2000-2010', '2010-2020', '2020+'];
 
   const fetchDiscoverMovies = async () => {
@@ -25,7 +23,7 @@ export const DiscoverPage: React.FC = () => {
       const [recs, wl] = await Promise.all([
         recommendationAPI.getRecommendations(
           selectedGenre || undefined,
-          selectedLanguage || undefined,
+          undefined,
           selectedEra || undefined
         ),
         interactionAPI.getWatchlist().catch(() => [])
@@ -41,7 +39,7 @@ export const DiscoverPage: React.FC = () => {
 
   useEffect(() => {
     fetchDiscoverMovies();
-  }, [selectedGenre, selectedLanguage, selectedEra]);
+  }, [selectedGenre, selectedEra]);
 
   const handleLike = async (movieId: number) => {
     await interactionAPI.submitFeedback(movieId, 'LIKE');
@@ -80,7 +78,7 @@ export const DiscoverPage: React.FC = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800">
           <div>
             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Genre</label>
             <select
@@ -90,23 +88,12 @@ export const DiscoverPage: React.FC = () => {
             >
               <option value="">All Genres</option>
               {genres.map((g) => (
-              
                 <option key={g} value={g}>{g}</option>
               ))}
             </select>
-          <div>
-            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Language</label>
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-            >
-              <option value="">All Languages</option>
-              {languages.map((l) => (
-                <option key={l} value={l}>{l}</option>
-              ))}
-            </select>
           </div>
+
+          <div>
             <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Release Era</label>
             <select
               value={selectedEra}

@@ -51,7 +51,7 @@ const MainApp: React.FC = () => {
       </main>
 
       <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 glass-panel">
-        <p>CineMatch AI — Built for Cognizant NPN AIA Hackathon 2026. Absolute Multi-User Isolation Engine.</p>
+        <p>CineMatch-AI-Absolute Multi-User Isolation Engine</p>
       </footer>
     </div>
   );
