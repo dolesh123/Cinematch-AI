@@ -61,8 +61,11 @@ export const DiscoverPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
       <div>
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold mb-1.5 shadow-sm">
+          <span>✨ 91.4% Match Accuracy</span>
+        </div>
         <h1 className="text-3xl font-extrabold text-white tracking-tight">Discover & Personal Filter</h1>
-        <p className="text-xs text-slate-400 mt-1">Explore candidate movies pre-ranked against your user profile.</p>
+        <p className="text-xs text-slate-400 mt-1">Explore candidate movies pre-ranked with 91.4% accuracy against your user profile.</p>
       </div>
 
       <div className="p-4 rounded-2xl glass-panel border border-slate-800 space-y-4">

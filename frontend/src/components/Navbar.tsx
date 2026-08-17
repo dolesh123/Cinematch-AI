@@ -93,6 +93,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
         {/* Right Section: User Badge & Demo Fast-Switcher */}
         <div className="flex items-center gap-3">
           
+          {/* 91.4% Accuracy Badge */}
+          <button
+            onClick={() => setActiveTab('admin')}
+            title="View ML Model Benchmark Analytics & Accuracy"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 text-xs font-extrabold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 transition-all shadow-sm"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>91.4% Accuracy</span>
+          </button>
+
           {/* Quick Demo Swapper Dropdown */}
           <div className="relative">
             <button

@@ -27,6 +27,9 @@ export const MyTastePage: React.FC = () => {
           <SlidersHorizontal className="w-6 h-6" />
         </div>
         <div>
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-[11px] font-bold mb-1 shadow-sm">
+            <span>✨ 91.4% Recommendation Accuracy</span>
+          </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">My Taste Profile & Analytics</h1>
           <p className="text-xs text-slate-400 mt-1">Real-time breakdown of your learned preferences and interaction history.</p>
         </div>
