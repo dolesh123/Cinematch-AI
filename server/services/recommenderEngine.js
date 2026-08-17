@@ -413,7 +413,7 @@ function formatFinalMovie(item) {
   }
 
   let backdropUrl = '';
-  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('http')) {
+  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('http') && !m.backdrop_path.includes('unsplash')) {
     backdropUrl = m.backdrop_path;
   } else if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('/')) {
     backdropUrl = `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`;
