@@ -1,17 +1,28 @@
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const CACHE_FILE = path.join(__dirname, '../../data/poster_cache.json');
 let posterCache = {};
 
-// Load persistent poster cache if available
-try {
-  if (fs.existsSync(CACHE_FILE)) {
-    posterCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+function loadCache() {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+      if (data && typeof data === 'object') {
+        posterCache = data;
+      }
+    }
+  } catch (e) {
+    // Keep in-memory cache
   }
-} catch (e) {
-  posterCache = {};
 }
+
+// Initial load
+loadCache();
+
+// Periodically reload cache if updated by background jobs
+setInterval(loadCache, 5000);
 
 // Curated verified authentic posters for top franchises & iconic titles
 const CURATED_POSTERS = {
@@ -59,32 +70,31 @@ const CURATED_POSTERS = {
   "Thor: Ragnarok": "https://upload.wikimedia.org/wikipedia/en/7/7d/Thor_Ragnarok_poster.jpg",
   "Guardians of the Galaxy": "https://upload.wikimedia.org/wikipedia/en/b/b5/Guardians_of_the_Galaxy_poster.jpg",
   "Guardians of the Galaxy Vol. 2": "https://upload.wikimedia.org/wikipedia/en/a/ab/Guardians_of_the_Galaxy_Vol_2_poster.jpg",
-  "Deadpool": "https://upload.wikimedia.org/wikipedia/en/c/ca/Deadpool.png",
+  "Deadpool": "https://upload.wikimedia.org/wikipedia/en/2/23/Deadpool_%282016_poster%29.png",
   "Deadpool 2": "https://upload.wikimedia.org/wikipedia/en/c/cf/Deadpool_2_poster.jpg",
   "Doctor Strange": "https://upload.wikimedia.org/wikipedia/en/a/a1/Doctor_Strange_poster.jpg",
   "Black Panther": "https://upload.wikimedia.org/wikipedia/en/d/d6/Black_Panther_film_poster.jpg",
 
-  // Sci-Fi & Classics
-  "Avatar": "https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg",
+  // Sci-Fi Classics & Blockbusters
   "Inception": "https://image.tmdb.org/t/p/w500/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg",
   "Interstellar": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+  "Avatar": "https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg",
   "The Matrix": "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
   "The Matrix Reloaded": "https://upload.wikimedia.org/wikipedia/en/b/ba/Poster_-_The_Matrix_Reloaded.jpg",
   "The Matrix Revolutions": "https://upload.wikimedia.org/wikipedia/en/3/34/Matrix_revolutions_ver7.jpg",
   "Blade Runner": "https://image.tmdb.org/t/p/w500/63N9uy8nd9j7Eog2axPQ8lbr3Wj.jpg",
   "Blade Runner 2049": "https://upload.wikimedia.org/wikipedia/en/9/9b/Blade_Runner_2049_poster.png",
   "Star Wars": "https://image.tmdb.org/t/p/w500/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg",
-  "The Empire Strikes Back": "https://upload.wikimedia.org/wikipedia/en/3/3f/The_Empire_Strikes_Back_%281980_film%29_poster.jpg",
-  "Return of the Jedi": "https://upload.wikimedia.org/wikipedia/en/b/b2/ReturnOfTheJediPoster1983.jpg",
   "Jurassic Park": "https://image.tmdb.org/t/p/w500/oU7Oq2kFAAlGqbU4VoAE36g4hoI.jpg",
-  "Jurassic World": "https://upload.wikimedia.org/wikipedia/en/6/6e/Jurassic_World_poster.jpg",
   "Alien": "https://image.tmdb.org/t/p/w500/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg",
-  "Aliens": "https://upload.wikimedia.org/wikipedia/en/f/fb/Aliens_poster.jpg",
   "The Terminator": "https://image.tmdb.org/t/p/w500/qvktm0BHcnmDpul4Hz01GIazWPr.jpg",
-  "Terminator 2: Judgment Day": "https://upload.wikimedia.org/wikipedia/en/8/85/Terminator2judgmentday.jpg",
+  "Terminator 2: Judgment Day": "https://upload.wikimedia.org/wikipedia/en/8/85/Terminator2poster.jpg",
+  "WALL·E": "https://image.tmdb.org/t/p/w500/hBhgo42r0A65QdJyV8i9LpsX34q.jpg",
+
+  // Drama / Crime / Thriller
   "The Shawshank Redemption": "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
   "The Godfather": "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
-  "The Godfather: Part II": "https://upload.wikimedia.org/wikipedia/en/0/03/Godfather_part_ii.jpg",
+  "The Godfather Part II": "https://upload.wikimedia.org/wikipedia/en/1/1c/Godfather_part_ii.jpg",
   "Pulp Fiction": "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
   "Fight Club": "https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
   "Forrest Gump": "https://image.tmdb.org/t/p/w500/saHP97rTPS5eLmrLQEcANmKrsFl.jpg",
@@ -97,16 +107,17 @@ const CURATED_POSTERS = {
   "The Wolf of Wall Street": "https://image.tmdb.org/t/p/w500/34m2tygAYBGqA9MXKhRDtzYd4MR.jpg",
   "Django Unchained": "https://image.tmdb.org/t/p/w500/8kOWDBK6XlPUzckuHDo3wwVRFwt.jpg",
   "Titanic": "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
-  "The Conjuring": "https://image.tmdb.org/t/p/w500/wVYREutTvI2tmxr6ujrHT704wGF.jpg",
-  "Halloween": "https://upload.wikimedia.org/wikipedia/en/a/af/Halloween_%281978%29_theatrical_poster.jpg",
-  "Scream": "https://upload.wikimedia.org/wikipedia/en/8/86/Scream_%281996_film%29_poster.jpg",
-  "The Shining": "https://upload.wikimedia.org/wikipedia/en/1/1d/The_Shining_%281980%29_theatrical_poster.jpg",
+
+  // Animation & Family
   "Toy Story": "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+  "Toy Story 2": "https://upload.wikimedia.org/wikipedia/en/c/c0/Toy_Story_2.jpg",
+  "Toy Story 3": "https://upload.wikimedia.org/wikipedia/en/6/69/Toy_Story_3_poster.jpg",
   "Up": "https://image.tmdb.org/t/p/w500/vpbaStTMt8qqXaEgnOR2EE4DNJk.jpg",
   "The Lion King": "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
   "Coco": "https://image.tmdb.org/t/p/w500/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg",
   "Spirited Away": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
-  "WALL·E": "https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg",
+  "Harry Potter and the Philosopher's Stone": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+  "The Conjuring": "https://image.tmdb.org/t/p/w500/wVYREutTvI2tmxr6ujrHT704wGF.jpg",
   "Tangled": "https://upload.wikimedia.org/wikipedia/en/a/a8/Tangled_poster.jpg",
   "Gladiator": "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
   "The Martian": "https://upload.wikimedia.org/wikipedia/en/7/71/The_Martian_film_poster.jpg",
@@ -115,92 +126,116 @@ const CURATED_POSTERS = {
   "Tenet": "https://upload.wikimedia.org/wikipedia/en/1/14/Tenet_movie_poster.jpg"
 };
 
-// Generates an instant, zero-latency authentic movie-branded SVG poster
-function generateCinematicPoster(title, year, genres, director) {
-  const safeTitle = (title || 'Movie').replace(/[<>&"]/g, '');
-  const safeYear = year ? String(year) : '';
-  const safeGenre = Array.isArray(genres) && genres.length > 0 ? genres[0] : 'Feature Film';
-  const safeDirector = director && director !== 'Unknown' ? `Directed by ${director}` : '';
+// High-Definition Cinematic Thematic Poster Palettes (Ensures stunning photography if external API is slow)
+const GENRE_CINEMATIC_BACKDROPS = {
+  Action: [
+    "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1533613220915-609f661a6fe1?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600&auto=format&fit=crop&q=80"
+  ],
+  Adventure: [
+    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80"
+  ],
+  "Science Fiction": [
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80"
+  ],
+  Thriller: [
+    "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&auto=format&fit=crop&q=80"
+  ],
+  Horror: [
+    "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80"
+  ],
+  Drama: [
+    "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&auto=format&fit=crop&q=80"
+  ],
+  Crime: [
+    "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=600&auto=format&fit=crop&q=80"
+  ],
+  Romance: [
+    "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=600&auto=format&fit=crop&q=80"
+  ],
+  Animation: [
+    "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80"
+  ],
+  Comedy: [
+    "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=600&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&auto=format&fit=crop&q=80"
+  ]
+};
 
-  let gradient1 = '#0f172a';
-  let gradient2 = '#1e1b4b';
-  let accent = '#818cf8';
-
-  if (safeGenre.includes('Action') || safeGenre.includes('Adventure')) {
-    gradient2 = '#31102e';
-    accent = '#f43f5e';
-  } else if (safeGenre.includes('Sci-Fi') || safeGenre.includes('Science Fiction')) {
-    gradient2 = '#083344';
-    accent = '#38bdf8';
-  } else if (safeGenre.includes('Horror') || safeGenre.includes('Thriller')) {
-    gradient2 = '#1c1917';
-    accent = '#ef4444';
-  } else if (safeGenre.includes('Animation') || safeGenre.includes('Family')) {
-    gradient2 = '#2e1065';
-    accent = '#a855f7';
-  } else if (safeGenre.includes('Romance')) {
-    gradient2 = '#4c0519';
-    accent = '#fb7185';
+function getGenreBackdrop(title, genres) {
+  const gList = Array.isArray(genres) && genres.length > 0 ? genres : ['Drama'];
+  for (const g of gList) {
+    if (GENRE_CINEMATIC_BACKDROPS[g]) {
+      const palette = GENRE_CINEMATIC_BACKDROPS[g];
+      const charCodeSum = (title || 'Film').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      return palette[charCodeSum % palette.length];
+    }
   }
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750" width="500" height="750">
-    <defs>
-      <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="${gradient1}" />
-        <stop offset="100%" stop-color="${gradient2}" />
-      </linearGradient>
-      <linearGradient id="overlay" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="transparent" />
-        <stop offset="60%" stop-color="rgba(2,6,23,0.4)" />
-        <stop offset="100%" stop-color="rgba(2,6,23,0.95)" />
-      </linearGradient>
-    </defs>
-    <rect width="500" height="750" fill="url(#bg)" />
-    
-    <rect x="20" y="20" width="460" height="710" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" rx="12" />
-    <circle cx="250" cy="220" r="110" fill="rgba(255,255,255,0.03)" />
-    <circle cx="250" cy="220" r="70" fill="none" stroke="${accent}" stroke-width="2" opacity="0.4" stroke-dasharray="6,6" />
-    
-    <path d="M 220 190 L 280 190 L 280 250 L 220 250 Z" fill="none" stroke="${accent}" stroke-width="3" rx="4" opacity="0.8" />
-    <polygon points="238,205 238,235 265,220" fill="${accent}" opacity="0.9" />
-
-    <rect width="500" height="750" fill="url(#overlay)" />
-
-    <rect x="40" y="520" width="auto" height="26" rx="6" fill="rgba(255,255,255,0.1)" />
-    <text x="45" y="538" fill="${accent}" font-family="Arial, sans-serif" font-size="12" font-weight="bold" letter-spacing="1.5">${safeGenre.toUpperCase()} • ${safeYear}</text>
-
-    <text x="40" y="590" fill="#ffffff" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="900" letter-spacing="-0.5">${safeTitle.length > 22 ? safeTitle.substring(0, 20) + '...' : safeTitle}</text>
-    
-    <text x="40" y="625" fill="#94a3b8" font-family="Arial, sans-serif" font-size="14" font-weight="500">${safeDirector}</text>
-    
-    <text x="40" y="690" fill="rgba(255,255,255,0.4)" font-family="Arial, sans-serif" font-size="10" letter-spacing="2">CINEMATCH AI • OFFICIAL SELECTION</text>
-  </svg>`;
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return GENRE_CINEMATIC_BACKDROPS.Drama[0];
 }
 
-// Resolves authentic movie poster URL instantly (0ms latency)
+// Background asynchronous resolver for missing posters
+function resolvePosterAsync(title, year) {
+  if (!title) return;
+  const cleanTitle = title.trim();
+  if (posterCache[cleanTitle] || CURATED_POSTERS[cleanTitle]) return;
+
+  const q = encodeURIComponent(cleanTitle);
+  const y = year ? `&y=${year}` : '';
+  const url = `https://www.omdbapi.com/?t=${q}${y}&apikey=trilogy`;
+
+  https.get(url, { timeout: 3000 }, (res) => {
+    let data = '';
+    res.on('data', chunk => data += chunk);
+    res.on('end', () => {
+      try {
+        const json = JSON.parse(data);
+        if (json.Response === 'True' && json.Poster && json.Poster.startsWith('http') && json.Poster !== 'N/A') {
+          posterCache[cleanTitle] = json.Poster;
+          // Asynchronously write to disk
+          fs.writeFile(CACHE_FILE, JSON.stringify(posterCache, null, 2), () => {});
+        }
+      } catch (e) {}
+    });
+  }).on('error', () => {});
+}
+
+// Synchronous fast poster getter
 function getMoviePoster(title, year, genres, director) {
-  if (!title) return generateCinematicPoster('Movie', year, genres, director);
+  if (!title) return getGenreBackdrop('Movie', genres);
 
   const cleanTitle = title.trim();
 
-  // 1. Check curated high-definition posters (0ms)
+  // 1. Check curated high-definition posters
   if (CURATED_POSTERS[cleanTitle]) {
     return CURATED_POSTERS[cleanTitle];
   }
 
-  // 2. Check local disk/memory cache (0ms)
-  if (posterCache[cleanTitle]) {
+  // 2. Check local disk/memory cache (which contains thousands of authentic posters)
+  if (posterCache[cleanTitle] && posterCache[cleanTitle].startsWith('http')) {
     return posterCache[cleanTitle];
   }
 
-  // 3. Fallback to instant Movie-Branded Cinema Poster (0ms)
-  return generateCinematicPoster(cleanTitle, year, genres, director);
+  // 3. Trigger background fetch for future requests
+  resolvePosterAsync(cleanTitle, year);
+
+  // 4. Return high-definition cinematic genre photography as immediate non-breaking poster
+  return getGenreBackdrop(cleanTitle, genres);
 }
 
 module.exports = {
   getMoviePoster,
-  generateCinematicPoster,
+  getGenreBackdrop,
+  resolvePosterAsync,
   CURATED_POSTERS
 };

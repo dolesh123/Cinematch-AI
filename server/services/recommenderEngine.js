@@ -399,18 +399,21 @@ function formatFinalMovie(item) {
   const mDirector = m.director || 'Unknown';
 
   let posterUrl = '';
-  if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.includes('image.tmdb.org') && !m.poster_path.includes('unsplash')) {
+  if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('http') && !m.poster_path.includes('data:image/svg')) {
     posterUrl = m.poster_path;
   } else if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('/')) {
     posterUrl = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
   }
 
-  if (!posterUrl || posterUrl.includes('unsplash')) {
-    posterUrl = getMoviePoster(mTitle, mYear, mGenres, mDirector);
+  const resolved = getMoviePoster(mTitle, mYear, mGenres, mDirector);
+  if (resolved && resolved.startsWith('http') && (!posterUrl || posterUrl.includes('unsplash'))) {
+    posterUrl = resolved;
+  } else if (!posterUrl) {
+    posterUrl = resolved;
   }
 
   let backdropUrl = '';
-  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.includes('image.tmdb.org') && !m.backdrop_path.includes('unsplash')) {
+  if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('http')) {
     backdropUrl = m.backdrop_path;
   } else if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('/')) {
     backdropUrl = `https://image.tmdb.org/t/p/w1280${m.backdrop_path}`;
