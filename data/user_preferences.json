@@ -611,5 +611,41 @@
     "last_liked_movie_ids": [
       27205
     ]
+  },
+  {
+    "id": 910,
+    "user_id": 910,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_searches": [
+      "space voyage with high suspense"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.6,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": true,
+    "last_active_at": "2026-08-19T15:03:47.045Z",
+    "updated_at": "2026-08-19T15:03:47.045Z",
+    "_id": "1787151827016.5542",
+    "last_liked_movie_ids": [
+      27205
+    ]
   }
 ]

@@ -15,7 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     { label: 'User A — Sci-Fi Fan', email: 'scifi_user@cinematch.ai', bg: 'bg-indigo-950/80 text-indigo-300 border-indigo-700/50' },
     { label: 'User B — Romance Fan', email: 'romance_user@cinematch.ai', bg: 'bg-rose-950/80 text-rose-300 border-rose-700/50' },
     { label: 'User C — Animation Fan', email: 'animation_user@cinematch.ai', bg: 'bg-amber-950/80 text-amber-300 border-amber-700/50' },
-    { label: 'Admin Evaluator', email: 'admin@cinematch.ai', bg: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/50' },
+    { label: 'Admin', email: 'admin@cinematch.ai', bg: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/50' },
   ];
 
   return (

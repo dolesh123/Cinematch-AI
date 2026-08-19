@@ -84,7 +84,7 @@ def seed_database():
                 },
                 {
                     "id": 4,
-                    "name": "Hackathon Evaluator",
+                    "name": "Admin",
                     "email": "admin@cinematch.ai",
                     "password_hash": hash_password("admin123"),
                     "is_admin": True,

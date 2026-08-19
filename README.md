@@ -484,7 +484,7 @@ npm --prefix frontend run build
 | **Sci-Fi Enthusiast** | `scifi_user@cinematch.ai` | `password123` | *Interstellar*, *Inception*, *The Matrix*, Sci-Fi/Thriller |
 | **Romance / Drama Fan** | `romance_user@cinematch.ai` | `password123` | *Titanic*, *The Notebook*, Romance/Drama |
 | **Animation Lover** | `animation_user@cinematch.ai` | `password123` | *WALL·E*, *Tangled*, *Up*, Animation/Family |
-| **Hackathon Admin** | `admin@cinematch.ai` | `admin123` | Full access to `/admin` model benchmark evaluation dashboard |
+| **Admin** | `admin@cinematch.ai` | `admin123` | Full access to `/admin` model benchmark evaluation dashboard |
 
 *You can also click **"Sign In as Demo User"** or register a new account on the Login page.*
 

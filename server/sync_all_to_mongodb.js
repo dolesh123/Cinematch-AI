@@ -46,11 +46,21 @@ async function syncToMongoDB() {
     for (const u of users) {
       const doc = cleanDoc(u);
       if (doc.email) {
-        await db.collection('users').updateOne(
-          { email: doc.email },
-          { $set: doc },
-          { upsert: true }
-        );
+        try {
+          await db.collection('users').updateOne(
+            { email: doc.email },
+            { $set: doc },
+            { upsert: true }
+          );
+        } catch (err) {
+          if (doc.id) {
+            await db.collection('users').updateOne(
+              { id: doc.id },
+              { $set: doc },
+              { upsert: true }
+            ).catch(() => {});
+          }
+        }
       }
     }
     console.log(`[Sync] Synced ${users.length} users into 'users' collection.`);

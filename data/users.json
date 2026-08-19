@@ -29,7 +29,7 @@
   },
   {
     "id": 4,
-    "name": "Hackathon Evaluator",
+    "name": "Admin",
     "email": "admin@cinematch.ai",
     "password_hash": "$2a$10$80QcVyNoTyvHw55WyupJ7OeqcZHKkRp1e9DCmGUEi3HORcCHt4FTi",
     "is_admin": true,
@@ -136,5 +136,15 @@
     "created_at": "2026-08-19T14:17:58.711Z",
     "last_login": "2026-08-19T14:17:58.711Z",
     "_id": "1787149078711.3364"
+  },
+  {
+    "id": 910,
+    "name": "Student Hacker",
+    "email": "student_1787151826931@cinematch.ai",
+    "password_hash": "$2a$10$I6H3QR/2h7Dvr5zIOXQ55OEVOc9YpfayQ8WrVS7.9L/Nk6PawOIh.",
+    "is_admin": false,
+    "created_at": "2026-08-19T15:03:47.015Z",
+    "last_login": "2026-08-19T15:03:47.015Z",
+    "_id": "1787151827015.9336"
   }
 ]

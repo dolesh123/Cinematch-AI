@@ -127,7 +127,7 @@ async function seedMongoIfEmpty(db) {
         { id: 1, name: 'Alex Vance (Sci-Fi Fan)', email: 'scifi_user@cinematch.ai', password_hash: passHash, is_admin: false, created_at: new Date() },
         { id: 2, name: 'Sophia Rose (Romance Fan)', email: 'romance_user@cinematch.ai', password_hash: passHash, is_admin: false, created_at: new Date() },
         { id: 3, name: 'Leo Das (Animation Fan)', email: 'animation_user@cinematch.ai', password_hash: passHash, is_admin: false, created_at: new Date() },
-        { id: 4, name: 'Hackathon Evaluator', email: 'admin@cinematch.ai', password_hash: adminHash, is_admin: true, created_at: new Date() },
+        { id: 4, name: 'Admin', email: 'admin@cinematch.ai', password_hash: adminHash, is_admin: true, created_at: new Date() },
       ]);
 
       await db.collection('user_preferences').insertMany([
