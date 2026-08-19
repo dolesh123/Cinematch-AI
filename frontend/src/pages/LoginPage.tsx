@@ -91,11 +91,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
           </button>
         </form>
 
-        {/* Quick Demo Login Accounts Section for Judges */}
+        {/* Quick Demo Login Accounts Section */}
         <div className="mt-8 pt-6 border-t border-slate-800">
           <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            Hackathon Judge Quick Sign-In
+            Demo Accounts & Admin Quick Sign-In
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <button
@@ -124,7 +124,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
               className="px-3 py-2 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-900/60 transition-colors text-left flex items-center gap-2"
             >
               <UserCheck className="w-3.5 h-3.5" />
-              Admin Dashboard
+              Admin
             </button>
           </div>
         </div>

@@ -22,7 +22,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(() => {
     try {
       const raw = safeStorage.getItem('cinematch_user');
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const parsed: User = JSON.parse(raw);
+      if (parsed && (parsed.email === 'admin@cinematch.ai' || parsed.name === 'Hackathon Evaluator')) {
+        parsed.name = 'Admin';
+        safeStorage.setItem('cinematch_user', JSON.stringify(parsed));
+      }
+      return parsed;
     } catch (e) {
       return null;
     }
@@ -52,9 +58,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const u = await authAPI.getMe();
       if (u && u.id) {
-        setUser(u);
+        const normalizedUser: User = {
+          ...u,
+          name: (u.email === 'admin@cinematch.ai' || u.name === 'Hackathon Evaluator') ? 'Admin' : u.name
+        };
+        setUser(normalizedUser);
         try {
-          safeStorage.setItem('cinematch_user', JSON.stringify(u));
+          safeStorage.setItem('cinematch_user', JSON.stringify(normalizedUser));
         } catch (e) {}
       } else {
         clearSession();
@@ -77,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await authAPI.login(email, password);
       const userObj: User = {
         id: data.user_id,
-        name: data.name,
+        name: (data.email === 'admin@cinematch.ai' || data.name === 'Hackathon Evaluator') ? 'Admin' : data.name,
         email: data.email,
         is_admin: data.is_admin,
         onboarding_completed: data.onboarding_completed,

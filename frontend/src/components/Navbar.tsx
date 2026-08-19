@@ -143,7 +143,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           {user ? (
             <div className="flex items-center gap-3 pl-2 border-l border-slate-800">
               <div className="hidden sm:flex flex-col text-right">
-                <span className="text-xs font-bold text-slate-200">{user.name}</span>
+                <span className="text-xs font-bold text-slate-200">
+                  {(user.email === 'admin@cinematch.ai' || user.name === 'Hackathon Evaluator') ? 'Admin' : user.name}
+                </span>
                 <span className="text-[10px] text-slate-400">{user.email}</span>
               </div>
               <button
