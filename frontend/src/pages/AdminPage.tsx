@@ -120,7 +120,7 @@ export const AdminPage: React.FC = () => {
       color: 'from-emerald-600 to-teal-400'
     },
     {
-      name: 'Gemini AI NLP Mood & Semantic Parser',
+      name: 'Gemini NLP Mood & Semantic Parser',
       accuracy: '93.5%',
       width: '93.5%',
       details: 'Natural language intent extraction into dimensional mood space',
@@ -310,7 +310,7 @@ export const AdminPage: React.FC = () => {
           <div>• <strong>Content Model</strong>: TF-IDF vectorizer over titles, directors, cast, genres, overview text, and emotional vibes (Cosine Similarity).</div>
           <div>• <strong>Collaborative Model</strong>: Truncated SVD Matrix Factorization trained on sparse rating matrices.</div>
           <div>• <strong>Dynamic Personalization</strong>: Exponential recency weighting exp(-λ · Δt) over user interaction history.</div>
-          <div>• <strong>LLM Mood Parser</strong>: Gemini AI natural language intent parser translating prompt queries into mood target vectors.</div>
+          <div>• <strong>LLM Mood Parser</strong>: Gemini natural language intent parser translating prompt queries into mood target vectors.</div>
         </div>
 
       </div>

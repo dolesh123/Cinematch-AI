@@ -1,20 +1,37 @@
+/**
+ * ============================================================================
+ * User Preferences Routes (/api/preferences)
+ * ============================================================================
+ * 
+ * Endpoints:
+ * - GET /api/preferences : Fetch current user's taste preferences & slider settings
+ * - PUT /api/preferences : Update genres, languages, ratings, era, and favorite seeds
+ */
+
 const express = require('express');
 const router = express.Router();
 const { getDB } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 
+function getUserFilter(userId) {
+  const numericId = Number(userId);
+  const key = isNaN(numericId) ? userId : numericId;
+  return { user_id: key };
+}
+
+// ----------------------------------------------------------------------------
 // GET /api/preferences
+// ----------------------------------------------------------------------------
 router.get('/', authenticateToken, async (req, res) => {
   const db = getDB();
   if (!db) {
     return res.status(500).json({ detail: 'Database unavailable' });
   }
 
-  const userId = req.user.id;
-  const numericId = Number(userId);
-  const userCondition = { $or: [{ user_id: isNaN(numericId) ? userId : numericId }, { user_id: String(userId) }] };
+  const userFilter = getUserFilter(req.user.id);
+  const pref = await db.collection('user_preferences').findOne(userFilter);
 
-  const pref = await db.collection('user_preferences').findOne(userCondition);
+  // Default fallback if preference document not yet created
   if (!pref) {
     return res.json({
       id: req.user.id,
@@ -44,7 +61,9 @@ router.get('/', authenticateToken, async (req, res) => {
   });
 });
 
+// ----------------------------------------------------------------------------
 // PUT /api/preferences
+// ----------------------------------------------------------------------------
 router.put('/', authenticateToken, async (req, res) => {
   const db = getDB();
   if (!db) {
@@ -79,17 +98,18 @@ router.put('/', authenticateToken, async (req, res) => {
     updated_at: new Date(),
   };
 
+  // 1. Update user preferences
   await db.collection('user_preferences').updateOne(
-    { $or: [{ user_id: userKey }, { user_id: String(userKey) }] },
+    getUserFilter(userId),
     { $set: updateData },
     { upsert: true }
   );
 
-  // Record onboarding seed interactions
+  // 2. Record onboarding seed movies as initial LIKE interactions
   if (Array.isArray(favorite_movies)) {
     for (const favId of favorite_movies) {
       const existing = await db.collection('user_interactions').findOne({
-        $or: [{ user_id: userKey }, { user_id: String(userKey) }],
+        ...getUserFilter(userId),
         movie_id: Number(favId),
         interaction_type: 'LIKE',
       });
@@ -105,9 +125,7 @@ router.put('/', authenticateToken, async (req, res) => {
     }
   }
 
-  const pref = await db.collection('user_preferences').findOne({
-    $or: [{ user_id: userKey }, { user_id: String(userKey) }],
-  });
+  const pref = await db.collection('user_preferences').findOne(getUserFilter(userId));
 
   return res.json({
     id: pref.id || pref.user_id,

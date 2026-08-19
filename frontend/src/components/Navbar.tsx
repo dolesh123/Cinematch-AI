@@ -33,7 +33,6 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xl tracking-tight text-white font-sans">CineMatch</span>
-              <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">AI</span>
             </div>
             <p className="text-[10px] text-slate-400 hidden sm:block">Multi-User Personalized Engine</p>
           </div>

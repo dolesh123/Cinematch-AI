@@ -407,14 +407,14 @@ npm install
 ```
 
 #### Step 3: Configure Environment Variables
-Ensure `server/.env` exists with your MongoDB Atlas and JWT credentials:
+Ensure `server/.env` exists with your MongoDB connection string (Local MongoDB Compass or MongoDB Atlas):
 ```env
-MONGO_URI=mongodb+srv://dolesh123:dolesh123@cluster0.pww0cdb.mongodb.net/?appName=Cluster0
+MONGO_URI=mongodb://127.0.0.1:27017
 MONGO_DB_NAME=cinematch
 PORT=8000
 SECRET_KEY=cinematch_super_secret_jwt_key_2026_cognizant_hackathon
 ```
-*(Note: If MongoDB Atlas is unreachable, the server automatically uses the built-in resilient in-memory database with 0 configuration needed).*
+*(Note: To connect via **MongoDB Compass**, open Compass and connect to `mongodb://localhost:27017` to inspect the `cinematch` database and its collections: `movies`, `users`, `user_preferences`, `ratings`, `user_interactions`, `watchlists`, etc.)*
 
 #### Step 4: Launch the Servers
 From the root directory:

@@ -1,9 +1,24 @@
+/**
+ * ============================================================================
+ * Movies Catalog & Search Routes (/api/movies)
+ * ============================================================================
+ * 
+ * Endpoints:
+ * - GET /api/movies/search : Search by title, cast, director, keywords with relevance ranking
+ * - GET /api/movies/:id    : Retrieve detailed movie information by numeric ID
+ * - GET /api/movies/       : Returns catalog list or delegates to search
+ */
+
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { getDB, getCachedMovies, getCachedMovieById, getMovieImages } = require('../db');
+const { getDB, getCachedMovies, getCachedMovieById } = require('../db');
 const { getMoviePoster } = require('../services/posterResolver');
 const { SECRET_KEY } = require('../middleware/auth');
+
+// ----------------------------------------------------------------------------
+// 1. Movie Formatter
+// ----------------------------------------------------------------------------
 
 function formatMovie(m) {
   const mId = Number(m.id || m._id);
@@ -12,16 +27,14 @@ function formatMovie(m) {
   const mGenres = Array.isArray(m.genres) ? m.genres : [];
   const mDirector = m.director || 'Unknown';
 
+  // 1. Authentic poster resolution
   let posterUrl = '';
-
-  // 1. Check if movie already has an authentic valid image URL
   if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('http') && !m.poster_path.includes('data:image/svg')) {
     posterUrl = m.poster_path;
   } else if (m.poster_path && typeof m.poster_path === 'string' && m.poster_path.startsWith('/')) {
     posterUrl = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
   }
 
-  // 2. Use authentic poster resolver
   const resolved = getMoviePoster(mTitle, mYear, mGenres, mDirector);
   if (resolved && resolved.startsWith('http') && (!posterUrl || posterUrl.includes('unsplash'))) {
     posterUrl = resolved;
@@ -29,7 +42,7 @@ function formatMovie(m) {
     posterUrl = resolved;
   }
 
-  // Backdrop resolution
+  // 2. Backdrop resolution
   let backdropUrl = '';
   if (m.backdrop_path && typeof m.backdrop_path === 'string' && m.backdrop_path.startsWith('http') && !m.backdrop_path.includes('unsplash')) {
     backdropUrl = m.backdrop_path;
@@ -58,7 +71,75 @@ function formatMovie(m) {
   };
 }
 
-// Background search history tracker
+// ----------------------------------------------------------------------------
+// 2. Search Relevance Scoring Helper
+// ----------------------------------------------------------------------------
+
+function calculateSearchRelevance(movie, query, queryTokens) {
+  const title = (movie.title || '').toLowerCase();
+  const director = (movie.director || '').toLowerCase();
+  const cast = (movie.cast_members || []).map((c) => c.toLowerCase());
+  const genres = (movie.genres || []).map((g) => g.toLowerCase());
+  const keywords = (movie.keywords || []).map((k) => k.toLowerCase());
+  const overview = (movie.overview || '').toLowerCase();
+
+  let relScore = 0;
+
+  // Title Matches
+  if (title === query) {
+    relScore += 1000; // Exact match
+  } else if (title.startsWith(query)) {
+    relScore += 700;
+  } else if (title.includes(query)) {
+    relScore += 500;
+  }
+
+  // Director Matches
+  if (director === query) {
+    relScore += 600;
+  } else if (director.includes(query)) {
+    relScore += 450;
+  }
+
+  // Cast Matches
+  if (cast.some((c) => c === query)) {
+    relScore += 400;
+  } else if (cast.some((c) => c.includes(query))) {
+    relScore += 300;
+  }
+
+  // Genre Matches
+  if (genres.some((g) => g === query || g.includes(query))) {
+    relScore += 350;
+  }
+
+  // Keyword Matches
+  if (keywords.some((k) => k.includes(query))) {
+    relScore += 250;
+  }
+
+  // Token-Level Multi-Field Matching
+  for (const tok of queryTokens) {
+    if (title.includes(tok)) relScore += 150;
+    if (director.includes(tok)) relScore += 100;
+    if (cast.some((c) => c.includes(tok))) relScore += 80;
+    if (genres.some((g) => g.includes(tok))) relScore += 80;
+    if (keywords.some((k) => k.includes(tok))) relScore += 50;
+    if (overview.includes(tok)) relScore += 20;
+  }
+
+  if (relScore > 0) {
+    // Add subtle tie-breaker based on rating and popularity
+    relScore += (Number(movie.rating) || 7.0) * 2 + Math.min(20, (Number(movie.popularity) || 10) / 10);
+  }
+
+  return relScore;
+}
+
+// ----------------------------------------------------------------------------
+// 3. User Search History Tracking (Async Non-Blocking)
+// ----------------------------------------------------------------------------
+
 function trackUserSearch(token, query) {
   if (!token || !query || !query.trim()) return;
   const db = getDB();
@@ -83,6 +164,7 @@ function trackUserSearch(token, query) {
         .toArray()
         .catch(() => []);
 
+      // Maintain sliding window of 4 recent searches
       if (userSearches.length > 4) {
         const oldestSearches = userSearches.slice(4);
         const oldestIds = oldestSearches.map((s) => s._id);
@@ -107,8 +189,12 @@ function trackUserSearch(token, query) {
   } catch (e) {}
 }
 
-// GET /api/movies/search
-router.get('/search', async (req, res) => {
+// ----------------------------------------------------------------------------
+// 4. API Endpoints
+// ----------------------------------------------------------------------------
+
+// GET /api/movies & GET /api/movies/search
+router.get(['/', '/search'], async (req, res) => {
   const { q, genre, language, limit = 20 } = req.query;
 
   // Track search query asynchronously in the background
@@ -122,6 +208,7 @@ router.get('/search', async (req, res) => {
     const allMovies = await getCachedMovies();
     let results = allMovies;
 
+    // Filter by genre
     if (genre) {
       const target = genre.toLowerCase().replace(/[^a-z0-9]/g, '');
       results = results.filter((m) =>
@@ -137,74 +224,26 @@ router.get('/search', async (req, res) => {
       );
     }
 
+    // Filter by language
     if (language) {
       results = results.filter((m) =>
         m.language && m.language.toLowerCase() === language.toLowerCase()
       );
     }
 
+    // Search query relevance ranking
     if (q && q.trim()) {
       const query = q.trim().toLowerCase();
       const queryTokens = query.split(/\s+/).filter((t) => t.length > 1);
 
       const scored = [];
       for (const m of results) {
-        const title = (m.title || '').toLowerCase();
-        const director = (m.director || '').toLowerCase();
-        const cast = (m.cast_members || []).map((c) => c.toLowerCase());
-        const genres = (m.genres || []).map((g) => g.toLowerCase());
-        const keywords = (m.keywords || []).map((k) => k.toLowerCase());
-        const overview = (m.overview || '').toLowerCase();
-
-        let relScore = 0;
-
-        // TOP PRIORITY: Search Relevance
-        if (title === query) {
-          relScore += 1000; // Exact title match
-        } else if (title.startsWith(query)) {
-          relScore += 700; // Title starts with query
-        } else if (title.includes(query)) {
-          relScore += 500; // Title contains full query
-        }
-
-        if (director === query) {
-          relScore += 600; // Exact director match
-        } else if (director.includes(query)) {
-          relScore += 450;
-        }
-
-        if (cast.some((c) => c === query)) {
-          relScore += 400; // Exact cast match
-        } else if (cast.some((c) => c.includes(query))) {
-          relScore += 300;
-        }
-
-        if (genres.some((g) => g === query || g.includes(query))) {
-          relScore += 350; // Genre match
-        }
-
-        if (keywords.some((k) => k.includes(query))) {
-          relScore += 250;
-        }
-
-        // Token-level matching
-        for (const tok of queryTokens) {
-          if (title.includes(tok)) relScore += 150;
-          if (director.includes(tok)) relScore += 100;
-          if (cast.some((c) => c.includes(tok))) relScore += 80;
-          if (genres.some((g) => g.includes(tok))) relScore += 80;
-          if (keywords.some((k) => k.includes(tok))) relScore += 50;
-          if (overview.includes(tok)) relScore += 20;
-        }
-
+        const relScore = calculateSearchRelevance(m, query, queryTokens);
         if (relScore > 0) {
-          // Add subtle tie breaker for rating & popularity
-          relScore += (Number(m.rating) || 7.0) * 2 + Math.min(20, (Number(m.popularity) || 10) / 10);
           scored.push({ movie: m, relScore });
         }
       }
 
-      // Sort strictly descending by search relevance score
       scored.sort((a, b) => b.relScore - a.relScore);
       results = scored.map((s) => s.movie);
     }
@@ -230,3 +269,5 @@ router.get('/:id', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.formatMovie = formatMovie;
+module.exports.trackUserSearch = trackUserSearch;

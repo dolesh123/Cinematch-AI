@@ -8,7 +8,7 @@ load_dotenv()
 
 logger = logging.getLogger("cinematch.database")
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://dolesh123:dolesh123@cluster0.pww0cdb.mongodb.net/?appName=Cluster0")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
 DB_NAME = os.getenv("MONGO_DB_NAME", "cinematch")
 
 try:
@@ -24,21 +24,21 @@ _db = None
 def get_database():
     """
     Returns the active MongoDB database instance.
-    Connects to MongoDB Atlas / server if reachable, or uses embedded mongomock in development/test.
+    Connects to local MongoDB Compass / MongoDB server if reachable, or uses embedded mongomock in development/test.
     """
     global _client, _db
     if _db is not None:
         return _db
 
     try:
-        # Attempt connection to MongoDB Atlas / server with short timeout
+        # Attempt connection to MongoDB server with short timeout
         test_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
         test_client.admin.command('ping')
         _client = test_client
         _db = _client[DB_NAME]
-        logger.info(f"Connected to MongoDB Atlas at {MONGO_URI} [DB: {DB_NAME}]")
+        logger.info(f"Connected to MongoDB at {MONGO_URI} [DB: {DB_NAME}]")
     except Exception as e:
-        logger.warning(f"MongoDB Atlas not reachable ({e}). Initializing embedded MongoDB engine.")
+        logger.warning(f"MongoDB server at {MONGO_URI} not reachable ({e}). Initializing embedded MongoDB engine.")
         _client = mongomock.MongoClient()
         _db = _client[DB_NAME]
 

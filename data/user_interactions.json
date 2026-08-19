@@ -302,5 +302,37 @@
     "weight": 0.5,
     "timestamp": "2026-08-15T12:35:54.800Z",
     "_id": "1786797354800.9058"
+  },
+  {
+    "user_id": 908,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-19T14:17:25.893Z",
+    "_id": "1787149045893.1255"
+  },
+  {
+    "user_id": 908,
+    "movie_id": 27205,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-19T14:17:25.896Z",
+    "_id": "1787149045896.6611"
+  },
+  {
+    "user_id": 909,
+    "movie_id": 27205,
+    "interaction_type": "LIKE",
+    "weight": 1,
+    "timestamp": "2026-08-19T14:17:58.735Z",
+    "_id": "1787149078735.1594"
+  },
+  {
+    "user_id": 909,
+    "movie_id": 27205,
+    "interaction_type": "WATCHLIST",
+    "weight": 0.5,
+    "timestamp": "2026-08-19T14:17:58.739Z",
+    "_id": "1787149078739.69"
   }
 ]

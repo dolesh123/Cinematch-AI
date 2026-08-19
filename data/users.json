@@ -6,7 +6,8 @@
     "password_hash": "$2a$10$n8wFUWqzbPh6dH1xkRVz9.1.H.TyKrkQeCKJg/7dq0LeQCISCjJGG",
     "is_admin": false,
     "created_at": "2026-08-14T06:53:49.419Z",
-    "_id": "1786690429419.0933"
+    "_id": "1786690429419.0933",
+    "last_login": "2026-08-19T05:35:32.124Z"
   },
   {
     "id": 2,
@@ -33,7 +34,8 @@
     "password_hash": "$2a$10$80QcVyNoTyvHw55WyupJ7OeqcZHKkRp1e9DCmGUEi3HORcCHt4FTi",
     "is_admin": true,
     "created_at": "2026-08-14T06:53:49.419Z",
-    "_id": "1786690429419.3093"
+    "_id": "1786690429419.3093",
+    "last_login": "2026-08-19T05:35:24.756Z"
   },
   {
     "id": 5,
@@ -114,5 +116,25 @@
     "created_at": "2026-08-15T12:35:54.637Z",
     "last_login": "2026-08-15T12:35:54.707Z",
     "_id": "1786797354637.9778"
+  },
+  {
+    "id": 908,
+    "name": "Student Hacker",
+    "email": "student_1787149045786@cinematch.ai",
+    "password_hash": "$2a$10$KKVhQ1m8Cc7cBzdyMMfb8Occ98IIYT26Xgfd2SN7Y.SiLvx.wZOPS",
+    "is_admin": false,
+    "created_at": "2026-08-19T14:17:25.863Z",
+    "last_login": "2026-08-19T14:17:25.863Z",
+    "_id": "1787149045863.8047"
+  },
+  {
+    "id": 909,
+    "name": "Student Hacker",
+    "email": "student_1787149078638@cinematch.ai",
+    "password_hash": "$2a$10$hN5yLkqm0SkTyFuDvOkLbeAYJWVbnCc/euHF/ELAbPl7vL.IZe/gC",
+    "is_admin": false,
+    "created_at": "2026-08-19T14:17:58.711Z",
+    "last_login": "2026-08-19T14:17:58.711Z",
+    "_id": "1787149078711.3364"
   }
 ]

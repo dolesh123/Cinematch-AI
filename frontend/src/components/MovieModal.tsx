@@ -135,11 +135,11 @@ export const MovieModal: React.FC<MovieModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto space-y-6 flex-1">
-          {/* AI Recommendation Explanation */}
+          {/* Recommendation Explanation */}
           <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30">
             <div className="flex items-center gap-2 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-2">
               <Sparkles className="w-4 h-4 text-indigo-400" />
-              Why CineMatch AI picked this for you
+              Why CineMatch picked this for you
             </div>
             <p className="text-sm text-slate-200 font-medium mb-3 italic">
               "{movie.explanation}"

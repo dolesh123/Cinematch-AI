@@ -40,7 +40,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-indigo-500/20">
             <Film className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">CineMatch AI</h1>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">CineMatch</h1>
           <p className="text-xs text-slate-400 mt-1">Multi-User Personalized Recommendation Engine</p>
         </div>
 

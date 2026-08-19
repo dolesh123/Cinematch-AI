@@ -76,5 +76,41 @@
     "query": "mind-bending sci-fi space exploration no horror",
     "timestamp": "2026-08-15T12:35:54.751Z",
     "_id": "1786797354751.494"
+  },
+  {
+    "user_id": 1,
+    "query": "horro",
+    "timestamp": "2026-08-19T05:38:22.845Z",
+    "_id": "1787117902845.872"
+  },
+  {
+    "user_id": 1,
+    "query": "horror",
+    "timestamp": "2026-08-19T05:38:27.513Z",
+    "_id": "1787117907513.6777"
+  },
+  {
+    "user_id": 1,
+    "query": "I would like to watch a romantic comedy",
+    "timestamp": "2026-08-19T05:38:30.402Z",
+    "_id": "1787117910402.6016"
+  },
+  {
+    "user_id": 1,
+    "query": "Looking for a mind-bending sci-fi thriller with plot twists",
+    "timestamp": "2026-08-19T05:38:32.291Z",
+    "_id": "1787117912291.6782"
+  },
+  {
+    "user_id": 908,
+    "query": "space voyage with high suspense",
+    "timestamp": "2026-08-19T14:17:25.889Z",
+    "_id": "1787149045889.017"
+  },
+  {
+    "user_id": 909,
+    "query": "space voyage with high suspense",
+    "timestamp": "2026-08-19T14:17:58.731Z",
+    "_id": "1787149078731.8772"
   }
 ]

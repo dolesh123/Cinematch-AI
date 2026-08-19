@@ -1,11 +1,70 @@
+/**
+ * ============================================================================
+ * Recommendation Routes (/api/recommendations)
+ * ============================================================================
+ * 
+ * Endpoints:
+ * - GET  /api/recommendations         : Dynamic hybrid recommendations based on user history & filter bar
+ * - GET  /api/recommendations/unified : Alias for dynamic hybrid recommendations
+ * - POST /api/recommendations/mood    : Dynamic recommendations based on natural language prompt
+ */
+
 const express = require('express');
 const router = express.Router();
 const { getDB } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const { getDynamicRecommendations } = require('../services/recommenderEngine');
 
-// GET /api/recommendations
-router.get('/', authenticateToken, async (req, res) => {
+// ----------------------------------------------------------------------------
+// Helper: Record user search query asynchronously
+// ----------------------------------------------------------------------------
+
+async function logUserSearch(db, userId, query) {
+  if (!db || !query || !query.trim()) return;
+
+  try {
+    await db.collection('user_searches').insertOne({
+      user_id: userId,
+      query: query.trim(),
+      timestamp: new Date(),
+    });
+
+    const userSearches = await db
+      .collection('user_searches')
+      .find({ user_id: userId })
+      .sort({ timestamp: -1 })
+      .toArray();
+
+    // Maintain 4 recent searches window
+    if (userSearches.length > 4) {
+      const oldestSearches = userSearches.slice(4);
+      const oldestIds = oldestSearches.map((s) => s._id);
+      await db.collection('user_searches').deleteMany({
+        _id: { $in: oldestIds },
+      });
+    }
+
+    const latestQueries = userSearches.slice(0, 4).map((s) => s.query);
+    await db.collection('user_preferences').updateOne(
+      { user_id: userId },
+      {
+        $set: {
+          recent_searches: latestQueries,
+          last_active_at: new Date(),
+          updated_at: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+  } catch (err) {
+    // Non-blocking
+  }
+}
+
+// ----------------------------------------------------------------------------
+// GET /api/recommendations & GET /api/recommendations/unified & GET /api/recommendations/cold-start
+// ----------------------------------------------------------------------------
+router.get(['/', '/unified', '/cold-start'], authenticateToken, async (req, res) => {
   const { genre, language, era, limit = 12 } = req.query;
   const userId = req.user.id;
 
@@ -18,7 +77,7 @@ router.get('/', authenticateToken, async (req, res) => {
       filterEra: era || null,
     });
 
-    // Record history asynchronously in the background without blocking HTTP response
+    // Record recommendation history asynchronously in background
     const db = getDB();
     if (db && Array.isArray(recs) && recs.length > 0) {
       const historyDocs = recs.map((r) => ({
@@ -42,7 +101,9 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
+// ----------------------------------------------------------------------------
 // POST /api/recommendations/mood
+// ----------------------------------------------------------------------------
 router.post('/mood', authenticateToken, async (req, res) => {
   const { prompt } = req.body;
   const userId = req.user.id;
@@ -53,44 +114,8 @@ router.post('/mood', authenticateToken, async (req, res) => {
   }
 
   try {
-    // 1. Record search asynchronously in the background
-    if (db) {
-      (async () => {
-        await db.collection('user_searches').insertOne({
-          user_id: userId,
-          query: prompt.trim(),
-          timestamp: new Date(),
-        }).catch(() => {});
-
-        const userSearches = await db
-          .collection('user_searches')
-          .find({ user_id: userId })
-          .sort({ timestamp: -1 })
-          .toArray()
-          .catch(() => []);
-
-        if (userSearches.length > 4) {
-          const oldestSearches = userSearches.slice(4);
-          const oldestIds = oldestSearches.map((s) => s._id);
-          await db.collection('user_searches').deleteMany({
-            _id: { $in: oldestIds },
-          }).catch(() => {});
-        }
-
-        const latestQueries = userSearches.slice(0, 4).map((s) => s.query);
-        await db.collection('user_preferences').updateOne(
-          { user_id: userId },
-          {
-            $set: {
-              recent_searches: latestQueries,
-              last_active_at: new Date(),
-              updated_at: new Date(),
-            },
-          },
-          { upsert: true }
-        ).catch(() => {});
-      })().catch(() => {});
-    }
+    // 1. Record search in background
+    logUserSearch(db, userId, prompt).catch(() => {});
 
     // 2. Compute dynamic recommendations based on latest mood & history
     const recs = await getDynamicRecommendations({

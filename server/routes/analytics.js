@@ -1,10 +1,23 @@
+/**
+ * ============================================================================
+ * Taste Profile & Analytics Routes (/api)
+ * ============================================================================
+ * 
+ * Endpoints:
+ * - GET /api/my-taste        : Real-time personalized taste breakdown and activity history
+ * - GET /api/model/metrics   : Machine learning offline hold-out evaluation benchmark metrics
+ * - GET /api/admin/analytics : Admin overview of dataset size, user interactions, latency & ML metrics
+ */
+
 const express = require('express');
 const router = express.Router();
 const { getDB, getCachedMovieById } = require('../db');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { evaluateModel } = require('../services/modelEvaluator');
 
+// ----------------------------------------------------------------------------
 // GET /api/my-taste
+// ----------------------------------------------------------------------------
 router.get('/my-taste', authenticateToken, async (req, res) => {
   const db = getDB();
   const userId = req.user.id;
@@ -22,16 +35,19 @@ router.get('/my-taste', authenticateToken, async (req, res) => {
     });
   }
 
+  // 1. Fetch user's interactions, ratings, and preferences in parallel
   const [interactions, ratings, pref] = await Promise.all([
     db.collection('user_interactions').find({ user_id: userId }).toArray(),
     db.collection('ratings').find({ user_id: userId }).toArray(),
     db.collection('user_preferences').findOne({ user_id: userId }),
   ]);
 
+  // 2. Compute average rating
   const avgRating = ratings.length > 0
     ? ratings.reduce((acc, r) => acc + Number(r.rating || 7.0), 0) / ratings.length
     : 0.0;
 
+  // 3. Resolve interacted movies to calculate genre distribution
   const movieIds = [...new Set(interactions.map((it) => it.movie_id))];
   const movies = (await Promise.all(movieIds.map((id) => getCachedMovieById(id)))).filter(Boolean);
   const movieMap = {};
@@ -66,7 +82,7 @@ router.get('/my-taste', authenticateToken, async (req, res) => {
     }));
   }
 
-  // Recent activity
+  // 4. Formulate recent activity log
   const recentInteractions = await db
     .collection('user_interactions')
     .find({ user_id: userId })
@@ -87,6 +103,7 @@ router.get('/my-taste', authenticateToken, async (req, res) => {
     }
   }
 
+  // 5. Generate personalized taste insights
   const topGenreName = topGenres.length > 0 ? topGenres[0].genre : 'Sci-Fi';
   const insights = [
     `You demonstrate a strong preference for ${topGenreName} content.`,
@@ -112,7 +129,9 @@ router.get('/my-taste', authenticateToken, async (req, res) => {
   });
 });
 
+// ----------------------------------------------------------------------------
 // GET /api/model/metrics
+// ----------------------------------------------------------------------------
 router.get('/model/metrics', async (req, res) => {
   try {
     const metrics = await evaluateModel(5);
@@ -132,7 +151,9 @@ router.get('/model/metrics', async (req, res) => {
   }
 });
 
+// ----------------------------------------------------------------------------
 // GET /api/admin/analytics
+// ----------------------------------------------------------------------------
 router.get('/admin/analytics', authenticateToken, requireAdmin, async (req, res) => {
   const db = getDB();
 

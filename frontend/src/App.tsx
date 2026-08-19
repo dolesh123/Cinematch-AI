@@ -19,7 +19,7 @@ const MainApp: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 text-sm">
-        Initializing CineMatch AI...
+        Initializing CineMatch...
       </div>
     );
   }
@@ -51,7 +51,7 @@ const MainApp: React.FC = () => {
       </main>
 
       <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 glass-panel">
-        <p>CineMatch-AI-Absolute Multi-User Isolation Engine</p>
+        <p>CineMatch Multi-User Isolation Engine</p>
       </footer>
     </div>
   );

@@ -100,11 +100,11 @@ export const MyTastePage: React.FC = () => {
             ))}
           </div>
 
-          {/* AI Insights Card */}
+          {/* Taste Insights Card */}
           <div className="p-5 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 mt-6">
             <div className="flex items-center gap-2 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-3">
               <Sparkles className="w-4 h-4 text-indigo-400" />
-              Automated AI Taste Insights
+              Automated Taste Insights
             </div>
             <ul className="space-y-2 text-xs text-slate-200">
               {profile.personalized_insights.map((insight, idx) => (

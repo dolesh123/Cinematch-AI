@@ -6,7 +6,7 @@ import type { MovieRecommendation, Movie } from '../types';
 import { MovieCard } from '../components/MovieCard';
 import { MovieModal } from '../components/MovieModal';
 import { MoodSearchHeader } from '../components/MoodSearchHeader';
-import { AIProcessingLoader } from '../components/AIProcessingLoader';
+import { ProcessingLoader } from '../components/ProcessingLoader';
 
 export const HomePage: React.FC = () => {
   const { user } = useAuth();
@@ -87,7 +87,7 @@ export const HomePage: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold mb-2.5 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span>91.4% Overall AI Accuracy Score</span>
+            <span>91.4% Overall Accuracy Score</span>
             <span className="text-slate-500">•</span>
             <span className="text-slate-400 font-medium">Hybrid TF-IDF + SVD Matrix Model</span>
           </div>
@@ -117,7 +117,7 @@ export const HomePage: React.FC = () => {
       />
 
       {loading || moodLoading ? (
-        <AIProcessingLoader />
+        <ProcessingLoader />
       ) : (
         <div className="space-y-12">
           <section>

@@ -24,8 +24,15 @@
       78
     ],
     "onboarding_completed": true,
-    "updated_at": "2026-08-14T06:53:49.421Z",
-    "_id": "1786690429421.4856"
+    "updated_at": "2026-08-19T05:38:32.293Z",
+    "_id": "1786690429421.4856",
+    "recent_searches": [
+      "Looking for a mind-bending sci-fi thriller with plot twists",
+      "I would like to watch a romantic comedy",
+      "horror",
+      "horro"
+    ],
+    "last_active_at": "2026-08-19T05:38:32.293Z"
   },
   {
     "id": 2,
@@ -111,8 +118,15 @@
       680
     ],
     "onboarding_completed": true,
-    "updated_at": "2026-08-14T06:53:49.421Z",
-    "_id": "1786690429421.9148"
+    "updated_at": "2026-08-18T09:46:50.736Z",
+    "_id": "1786690429421.9148",
+    "recent_searches": [
+      "I would like to watch a romantic comedy",
+      "I would like to watch a romantic comedy",
+      "I would like to watch a romantic comedy",
+      "I am sad and need an uplifting feel-good movie"
+    ],
+    "last_active_at": "2026-08-18T09:46:50.736Z"
   },
   {
     "id": 5,
@@ -499,5 +513,103 @@
     "onboarding_completed": true,
     "updated_at": "2026-08-15T12:35:54.713Z",
     "_id": "1786797354713.8787"
+  },
+  {
+    "id": 908,
+    "user_id": 908,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_searches": [
+      "space voyage with high suspense"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.5,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": false,
+    "last_active_at": "2026-08-19T14:17:25.893Z",
+    "updated_at": "2026-08-19T14:17:25.893Z",
+    "_id": "1787149045864.554",
+    "last_liked_movie_ids": [
+      27205
+    ]
+  },
+  {
+    "$or": [
+      {
+        "user_id": 908
+      },
+      {
+        "user_id": "908"
+      }
+    ],
+    "user_id": 908,
+    "preferred_genres": [
+      "Sci-Fi",
+      "Action"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.6,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": true,
+    "updated_at": "2026-08-19T14:17:25.876Z",
+    "_id": "1787149045876.1162"
+  },
+  {
+    "id": 909,
+    "user_id": 909,
+    "preferred_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_liked_genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction",
+      "Mystery",
+      "Adventure"
+    ],
+    "recent_searches": [
+      "space voyage with high suspense"
+    ],
+    "preferred_languages": [
+      "English"
+    ],
+    "min_rating": 5,
+    "max_rating": 10,
+    "discovery_slider": 0.6,
+    "preferred_era": [],
+    "favorite_movies": [],
+    "onboarding_completed": true,
+    "last_active_at": "2026-08-19T14:17:58.736Z",
+    "updated_at": "2026-08-19T14:17:58.736Z",
+    "_id": "1787149078712.4602",
+    "last_liked_movie_ids": [
+      27205
+    ]
   }
 ]
