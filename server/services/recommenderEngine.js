@@ -58,7 +58,9 @@ const GENRE_SYNONYMS = {
   romantic: 'Romance',
   romcom: 'Romance',
   'sci-fi': 'Science Fiction',
+  'sci fi': 'Science Fiction',
   scifi: 'Science Fiction',
+  sci: 'Science Fiction',
   'science fiction': 'Science Fiction',
   'science-fiction': 'Science Fiction',
   sciencefiction: 'Science Fiction',
@@ -67,6 +69,10 @@ const GENRE_SYNONYMS = {
   war: 'War',
   western: 'Western',
 };
+
+function cleanAlphaNum(str) {
+  return String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
 
 const DISTINCTIVE_GENRES = ['Romance', 'Horror', 'Animation', 'Science Fiction', 'Comedy', 'Fantasy'];
 
@@ -215,7 +221,23 @@ async function getUserTasteProfile(db, userId, moodQuery) {
 
   if (moodQuery && moodQuery.trim()) {
     hasActiveSearch = true;
+    const lowerQuery = moodQuery.toLowerCase();
+    const cleanQ = cleanAlphaNum(moodQuery);
+
     parseNegation(moodQuery).forEach((g) => searchNegatedGenres.add(g));
+
+    // Check full phrases and cleaned query against genre synonyms
+    for (const [synonym, canonical] of Object.entries(GENRE_SYNONYMS)) {
+      const cleanSyn = cleanAlphaNum(synonym);
+      if (
+        lowerQuery === synonym ||
+        lowerQuery.includes(synonym) ||
+        (cleanSyn.length >= 3 && (cleanQ === cleanSyn || cleanQ.includes(cleanSyn)))
+      ) {
+        activeTargetGenres.add(canonical);
+      }
+    }
+
     extractKeywords(moodQuery).forEach((w) => {
       activeKeywords.add(w);
       if (GENRE_SYNONYMS[w]) activeTargetGenres.add(GENRE_SYNONYMS[w]);
@@ -296,53 +318,61 @@ function calculateCandidateScore(movie, context) {
   // --------------------------------------------------------------------------
   if (hasActiveSearch) {
     const queryStr = moodQuery.toLowerCase();
+    const cleanQ = cleanAlphaNum(moodQuery);
+    const cleanT = cleanAlphaNum(movie.title);
+    const cleanD = cleanAlphaNum(movie.director);
     let activeHits = 0;
     let matchedTerm = '';
 
-    if (movieTitle === queryStr) {
-      activeHits += 800; // Exact title match
+    // Title Matches (exact, startsWith, includes with alphanumeric tolerance for hyphenated titles like Spider-Man)
+    if (movieTitle === queryStr || (cleanQ.length >= 3 && cleanT === cleanQ)) {
+      activeHits += 900; // Exact title match
       matchedTerm = movie.title;
-    } else if (movieTitle.startsWith(queryStr)) {
-      activeHits += 600;
+    } else if (movieTitle.startsWith(queryStr) || (cleanQ.length >= 3 && cleanT.startsWith(cleanQ))) {
+      activeHits += 700;
       matchedTerm = movie.title;
-    } else if (movieTitle.includes(queryStr)) {
-      activeHits += 450;
-      matchedTerm = queryStr;
+    } else if (movieTitle.includes(queryStr) || (cleanQ.length >= 4 && cleanT.includes(cleanQ))) {
+      activeHits += 550;
+      matchedTerm = movie.title;
     }
 
-    if (movieDirector === queryStr) {
+    // Director Matches
+    if (movieDirector === queryStr || (cleanQ.length >= 3 && cleanD === cleanQ)) {
       activeHits += 500;
       matchedTerm = movie.director;
-    } else if (movieDirector.includes(queryStr)) {
+    } else if (movieDirector.includes(queryStr) || (cleanQ.length >= 4 && cleanD.includes(cleanQ))) {
       activeHits += 350;
       matchedTerm = movie.director;
     }
 
-    for (const kw of activeKeywords) {
-      if (movieTitle.includes(kw)) {
-        activeHits += 200;
-        matchedTerm = kw;
-      } else if (movieDirector.includes(kw)) {
-        activeHits += 150;
-        matchedTerm = movie.director;
-      } else if (movieCast.some((c) => c.includes(kw))) {
-        activeHits += 120;
-        matchedTerm = kw;
-      } else if (movieGenres.some((g) => g.toLowerCase().includes(kw))) {
-        activeHits += 100;
-        matchedTerm = kw;
-      } else if (movieKeywords.some((k) => k.includes(kw))) {
-        activeHits += 60;
-        matchedTerm = kw;
-      } else if (movieOverview.includes(kw)) {
-        activeHits += 30;
+    // Active Target Genres match (e.g. 'sci-fi' -> 'Science Fiction')
+    for (const tg of activeTargetGenres) {
+      if (movieGenres.some((g) => matchesGenre(g, tg))) {
+        activeHits += 400;
+        if (!matchedTerm) matchedTerm = tg;
       }
     }
 
-    for (const tg of activeTargetGenres) {
-      if (movieGenres.includes(tg)) {
+    // Token-level keywords: Avoid 3-letter false positive substrings in titles (like 'sci' in 'Subconscious')
+    for (const kw of activeKeywords) {
+      const cleanKw = cleanAlphaNum(kw);
+      if (cleanKw.length >= 4 && cleanT.includes(cleanKw)) {
+        activeHits += 200;
+        if (!matchedTerm) matchedTerm = movie.title;
+      } else if (cleanKw.length >= 4 && cleanD.includes(cleanKw)) {
         activeHits += 150;
-        matchedTerm = tg;
+        if (!matchedTerm) matchedTerm = movie.director;
+      } else if (movieCast.some((c) => cleanAlphaNum(c).includes(cleanKw))) {
+        activeHits += 120;
+        if (!matchedTerm) matchedTerm = kw;
+      } else if (movieGenres.some((g) => matchesGenre(g, kw))) {
+        activeHits += 100;
+        if (!matchedTerm) matchedTerm = kw;
+      } else if (movieKeywords.some((k) => k.includes(kw) || cleanAlphaNum(k).includes(cleanKw))) {
+        activeHits += 60;
+        if (!matchedTerm) matchedTerm = kw;
+      } else if (movieOverview.includes(kw)) {
+        activeHits += 30;
       }
     }
 

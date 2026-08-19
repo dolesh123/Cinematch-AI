@@ -83,47 +83,56 @@ function calculateSearchRelevance(movie, query, queryTokens) {
   const keywords = (movie.keywords || []).map((k) => k.toLowerCase());
   const overview = (movie.overview || '').toLowerCase();
 
+  const cleanQuery = query.replace(/[^a-z0-9]/g, '');
+  const cleanTitle = title.replace(/[^a-z0-9]/g, '');
+  const cleanDirector = director.replace(/[^a-z0-9]/g, '');
+
   let relScore = 0;
 
   // Title Matches
-  if (title === query) {
+  if (title === query || (cleanQuery && cleanTitle === cleanQuery)) {
     relScore += 1000; // Exact match
-  } else if (title.startsWith(query)) {
+  } else if (title.startsWith(query) || (cleanQuery.length >= 3 && cleanTitle.startsWith(cleanQuery))) {
     relScore += 700;
-  } else if (title.includes(query)) {
+  } else if (title.includes(query) || (cleanQuery.length >= 4 && cleanTitle.includes(cleanQuery))) {
     relScore += 500;
   }
 
   // Director Matches
-  if (director === query) {
+  if (director === query || (cleanQuery && cleanDirector === cleanQuery)) {
     relScore += 600;
-  } else if (director.includes(query)) {
+  } else if (director.includes(query) || (cleanQuery.length >= 4 && cleanDirector.includes(cleanQuery))) {
     relScore += 450;
   }
 
   // Cast Matches
-  if (cast.some((c) => c === query)) {
+  if (cast.some((c) => c === query || c.replace(/[^a-z0-9]/g, '') === cleanQuery)) {
     relScore += 400;
-  } else if (cast.some((c) => c.includes(query))) {
+  } else if (cast.some((c) => c.includes(query) || (cleanQuery.length >= 4 && c.replace(/[^a-z0-9]/g, '').includes(cleanQuery)))) {
     relScore += 300;
   }
 
   // Genre Matches
-  if (genres.some((g) => g === query || g.includes(query))) {
+  const isSciFiQuery = cleanQuery === 'scifi' || cleanQuery === 'sciencefiction' || query === 'sci-fi' || cleanQuery === 'sci';
+  if (
+    genres.some((g) => g === query || g.includes(query) || g.replace(/[^a-z0-9]/g, '') === cleanQuery) ||
+    (isSciFiQuery && genres.some((g) => g.includes('science') || g.includes('sci')))
+  ) {
     relScore += 350;
   }
 
   // Keyword Matches
-  if (keywords.some((k) => k.includes(query))) {
+  if (keywords.some((k) => k.includes(query) || (cleanQuery.length >= 4 && k.replace(/[^a-z0-9]/g, '').includes(cleanQuery)))) {
     relScore += 250;
   }
 
   // Token-Level Multi-Field Matching
   for (const tok of queryTokens) {
-    if (title.includes(tok)) relScore += 150;
-    if (director.includes(tok)) relScore += 100;
+    const cleanTok = tok.replace(/[^a-z0-9]/g, '');
+    if (tok.length >= 4 && cleanTitle.includes(cleanTok)) relScore += 150;
+    if (tok.length >= 4 && cleanDirector.includes(cleanTok)) relScore += 100;
     if (cast.some((c) => c.includes(tok))) relScore += 80;
-    if (genres.some((g) => g.includes(tok))) relScore += 80;
+    if (genres.some((g) => g.includes(tok) || g.replace(/[^a-z0-9]/g, '') === cleanTok)) relScore += 80;
     if (keywords.some((k) => k.includes(tok))) relScore += 50;
     if (overview.includes(tok)) relScore += 20;
   }

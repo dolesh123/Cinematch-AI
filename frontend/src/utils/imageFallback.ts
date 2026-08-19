@@ -61,6 +61,26 @@ export function getClientGenreFallback(title?: string, genres?: string[]): strin
   return GENRE_FALLBACK_IMAGES.Drama[0];
 }
 
+export function createSvgPosterDataUri(title: string = 'Movie', genres: string[] = ['Cinema']): string {
+  const genre = (Array.isArray(genres) && genres.length > 0 ? genres[0] : 'Cinema');
+  const cleanTitle = (title || 'Film').length > 20 ? (title || 'Film').slice(0, 18) + '...' : (title || 'Film');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e1b4b"/>
+        <stop offset="50%" stop-color="#0f172a"/>
+        <stop offset="100%" stop-color="#020617"/>
+      </linearGradient>
+    </defs>
+    <rect width="300" height="450" fill="url(#g)"/>
+    <circle cx="150" cy="180" r="45" fill="#4f46e5" opacity="0.25"/>
+    <polygon points="140,160 170,180 140,200" fill="#818cf8"/>
+    <text x="150" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#f8fafc" text-anchor="middle">${cleanTitle}</text>
+    <text x="150" y="295" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">${genre}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 export function handleImageError(
   e: React.SyntheticEvent<HTMLImageElement, Event>,
   title?: string,
@@ -71,8 +91,14 @@ export function handleImageError(
   const target = e.target as HTMLImageElement;
   const fallback = getClientGenreFallback(title, genres);
   
-  if (target.src !== fallback) {
-    target.onerror = null;
+  if (target.src !== fallback && !target.src.startsWith('data:image/svg')) {
+    target.onerror = () => {
+      target.onerror = null;
+      target.src = createSvgPosterDataUri(title, genres);
+    };
     target.src = fallback;
+  } else {
+    target.onerror = null;
+    target.src = createSvgPosterDataUri(title, genres);
   }
 }
